@@ -1,10 +1,10 @@
-import { c, waypoints } from "./index.js";
+import { c, enemyPath } from "./init.js";
 
 export class Enemy {
   constructor() {
     this.width = 40;
     this.height = 40;
-    this.position = { x: 0, y: waypoints[0].y - this.width / 2 };
+    this.position = { x: 0, y: enemyPath[0].y - this.width / 2 };
     this.waypointIndex = 0;
     this.center = {
       x: this.position.x + this.width / 2,
@@ -19,7 +19,7 @@ export class Enemy {
   }
 
   update() {
-    const waypoint = waypoints[this.waypointIndex];
+    const waypoint = enemyPath[this.waypointIndex];
     const yDistance = waypoint.y - this.center.y;
     const xDistance = waypoint.x - this.center.x;
     const angle = Math.atan2(yDistance, xDistance);
@@ -39,7 +39,7 @@ export class Enemy {
     if (
       Math.round(this.center.x) === waypoint.x &&
       Math.round(this.center.y) === waypoint.y &&
-      this.waypointIndex < waypoints.length - 1
+      this.waypointIndex < enemyPath.length - 1
     ) {
       this.waypointIndex++;
     }
@@ -48,9 +48,9 @@ export class Enemy {
   reachedTower() {
     return (
       Math.round(this.position.x) ===
-        Math.round(waypoints[waypoints.length - 1].x - this.width / 2) &&
+        Math.round(enemyPath[enemyPath.length - 1].x - this.width / 2) &&
       Math.round(this.position.y) ===
-        Math.round(waypoints[waypoints.length - 1].y - this.height / 2)
+        Math.round(enemyPath[enemyPath.length - 1].y - this.height / 2)
     );
   }
 }
