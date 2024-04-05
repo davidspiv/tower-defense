@@ -1,4 +1,4 @@
-import { c } from "./init.js";
+import { c, paths } from "./init.js";
 import { enemies, waves } from "./waves.js";
 
 const image = new Image();
@@ -13,6 +13,9 @@ image.onload = () => {
 function animate() {
   requestAnimationFrame(animate);
   c.drawImage(image, 0, 0);
+  for (let path of paths) {
+    path.draw();
+  }
 
   for (let i = 0; i < enemies.length; i++) {
     const enemy = enemies[i];

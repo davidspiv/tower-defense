@@ -54,3 +54,21 @@ export class Enemy {
     );
   }
 }
+
+export class Path {
+  constructor(position) {
+    this.width = 64;
+    this.position = position;
+    this.color = "green";
+  }
+
+  draw() {
+    c.fillStyle = this.color;
+    c.fillRect(
+      this.position.x - this.width / 2,
+      this.position.y - this.width / 2,
+      this.width,
+      this.width
+    );
+  }
+}

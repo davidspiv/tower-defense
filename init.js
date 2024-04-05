@@ -1,3 +1,6 @@
+import { deepEqual } from "./utils.js";
+import { Path } from "./classes.js";
+
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 const canvasSize = { x: 1280, y: 768 };
@@ -32,46 +35,59 @@ const enemyPath = [
   grid[7][19],
 ];
 
-const sectionMap = (startingPoint, enemyVerts) => {
+const createPathArr = (startingPoint, enemyVerts) => {
   const pathArr = [];
   enemyVerts.unshift(startingPoint);
 
   for (let i = 1; i < Math.round(enemyVerts.length); i++) {
     const cordX = enemyVerts[i - 1].x;
-    const nextCordX = enemyVerts[i].x;
     const cordY = enemyVerts[i - 1].y;
-    const nextCordY = enemyVerts[i].y;
 
-    pathArr.push(enemyVerts[i - 1]);
+    const bridgeX = () => {
+      const nextCord = enemyVerts[i].x;
+      const mult = (nextCord - cordX) / 64;
+      const scalar = nextCord > cordX ? 1 : -1;
+
+      for (let i = 0; i <= mult; i++) {
+        const path = { x: cordX + 64 * i * scalar, y: cordY };
+        pathArr.push(path);
+        paths.push(new Path(path));
+      }
+    };
+
+    const bridgeY = () => {
+      const nextCord = enemyVerts[i].y;
+      const mult = (nextCord - cordY) / 64;
+      const scalar = nextCord > cordY ? 1 : -1;
+
+      for (let i = 1; i < Math.abs(mult); i++) {
+        const path = { x: cordX, y: cordY + 64 * i * scalar };
+        pathArr.push(path);
+        paths.push(new Path(path));
+      }
+    };
 
     if (i % 2 === 1) {
-      const mult = (nextCordX - cordX) / 64;
-      for (let i = 2; i < mult; i++) {
-        pathArr.push({ x: cordX + 64 * i, y: cordY });
-      }
+      bridgeX();
     } else {
-      const mult = (nextCordY - cordY) / 64;
-      const scalar = nextCordY > cordY ? 1 : -1;
-
-      for (let i = 2; i < Math.abs(mult); i++) {
-        pathArr.push({ x: cordX, y: cordY + 64 * i * scalar });
-      }
+      bridgeY();
     }
   }
   return pathArr;
 };
 
-const pathArr = sectionMap(grid[6][0], enemyPath);
+const createBuildArr = () => {
+  const buildArr = [];
 
-console.log(pathArr);
+  return buildArr;
+};
 
-function deepEqual(x, y) {
-  return x && y && typeof x === "object" && typeof y === "object"
-    ? Object.keys(x).length === Object.keys(y).length &&
-        Object.keys(x).reduce(function (isEqual, key) {
-          return isEqual && deepEqual(x[key], y[key]);
-        }, true)
-    : x === y;
-}
+const paths = [];
 
-export { c, canvasSize, enemyPath };
+createPathArr(grid[6][0], enemyPath);
+const builds = [];
+createBuildArr();
+console.log(builds.length);
+
+export { c, canvasSize, enemyPath, paths };
+//197
