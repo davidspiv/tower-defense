@@ -1,10 +1,10 @@
-import { c, enemyPath } from "./init.js";
+import { c, enemyWaypoints } from "./init.js";
 
 export class Enemy {
   constructor() {
     this.width = 40;
     this.height = 40;
-    this.position = { x: 0, y: enemyPath[0].y - this.width / 2 };
+    this.position = { x: 0, y: enemyWaypoints[0].y - this.width / 2 };
     this.waypointIndex = 0;
     this.center = {
       x: this.position.x + this.width / 2,
@@ -19,7 +19,7 @@ export class Enemy {
   }
 
   update() {
-    const waypoint = enemyPath[this.waypointIndex];
+    const waypoint = enemyWaypoints[this.waypointIndex];
     const yDistance = waypoint.y - this.center.y;
     const xDistance = waypoint.x - this.center.x;
     const angle = Math.atan2(yDistance, xDistance);
@@ -39,7 +39,7 @@ export class Enemy {
     if (
       Math.round(this.center.x) === waypoint.x &&
       Math.round(this.center.y) === waypoint.y &&
-      this.waypointIndex < enemyPath.length - 1
+      this.waypointIndex < enemyWaypoints.length - 1
     ) {
       this.waypointIndex++;
     }
@@ -48,27 +48,45 @@ export class Enemy {
   reachedTower() {
     return (
       Math.round(this.position.x) ===
-        Math.round(enemyPath[enemyPath.length - 1].x - this.width / 2) &&
+        Math.round(
+          enemyWaypoints[enemyWaypoints.length - 1].x - this.width / 2
+        ) &&
       Math.round(this.position.y) ===
-        Math.round(enemyPath[enemyPath.length - 1].y - this.height / 2)
+        Math.round(
+          enemyWaypoints[enemyWaypoints.length - 1].y - this.height / 2
+        )
     );
   }
 }
 
-export class Path {
-  constructor(position) {
-    this.width = 64;
+export class Tile {
+  constructor(position, color = "rgba(255,255,255,.2)") {
+    this.size = 64;
     this.position = position;
-    this.color = "green";
+    this.color = color;
   }
 
   draw() {
     c.fillStyle = this.color;
     c.fillRect(
-      this.position.x - this.width / 2,
-      this.position.y - this.width / 2,
-      this.width,
-      this.width
+      this.position.x - this.size / 2,
+      this.position.y - this.size / 2,
+      this.size,
+      this.size
     );
+  }
+
+  update(mouse) {
+    this.draw();
+
+    // if (
+    //   this.color === "rgba(255,255,255,.2)" &&
+    //   mouse.x > this.position.x &&
+    //   mouse.x < this.position.x + this.size / 2 &&
+    //   mouse.y > this.position.y &&
+    //   mouse.y < this.position.y + this.size / 2
+    // ) {
+    //   console.log("collision");
+    // }
   }
 }

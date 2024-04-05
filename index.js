@@ -1,4 +1,4 @@
-import { c, paths } from "./init.js";
+import { c, gridArr } from "./init.js";
 import { enemies, waves } from "./waves.js";
 
 const image = new Image();
@@ -13,8 +13,10 @@ image.onload = () => {
 function animate() {
   requestAnimationFrame(animate);
   c.drawImage(image, 0, 0);
-  for (let path of paths) {
-    path.draw();
+  for (let row of gridArr) {
+    for (let el of row) {
+      el.update(mouse);
+    }
   }
 
   for (let i = 0; i < enemies.length; i++) {
@@ -26,3 +28,13 @@ function animate() {
     }
   }
 }
+
+const mouse = {
+  x: undefined,
+  y: undefined,
+};
+
+window.addEventListener("mousemove", (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
