@@ -18,7 +18,7 @@ function animate() {
       tile.update(mouse);
 
       for (let i = tile.projectiles.length - 1; i >= 0; i--) {
-        tile.projectiles[i].update(enemies);
+        tile.projectiles[i].update(enemies, tile);
         if (tile.projectiles[i].collision === true) {
           tile.projectiles.splice(i, 1);
           console.log("enemy health - 1");

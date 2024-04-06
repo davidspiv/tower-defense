@@ -66,7 +66,9 @@ export class Tile {
     this.position = position;
     this.color = color;
     this.type = type;
+
     this.projectiles = [];
+    this.range = 0;
   }
 
   draw() {
@@ -82,6 +84,11 @@ export class Tile {
       this.size,
       this.size
     );
+
+    // c.beginPath();
+    // c.arc(this.position.x, this.position.y, this.range, 0, Math.PI * 2);
+    // c.fillStyle = "rgba(0, 0, 255, .1)";
+    // c.fill();
   }
 
   isSelected(mouse) {
@@ -107,6 +114,7 @@ export class Tile {
                 y: this.position.y,
               }),
             ];
+            this.range = 250;
           }
         } else if (this.type !== "building") {
           this.type = "selected";
@@ -134,6 +142,7 @@ export class Projectile {
     };
     this.radius = 5;
     this.collision = false;
+    this.target;
   }
 
   draw() {
@@ -143,9 +152,16 @@ export class Projectile {
     c.fill();
   }
 
-  update(enemies) {
-    const target = enemies[enemies.length - 1];
-    const center = target?.center;
+  update(enemies, building) {
+    const validEnemies = enemies.filter((enemy) => {
+      const xDiff = enemy.position.x - building.position.x;
+      const yDiff = enemy.position.y - building.position.y;
+      const distance = Math.hypot(xDiff, yDiff);
+      return distance < enemy.radius + building.range;
+    });
+
+    this.target = validEnemies[validEnemies.length - 1];
+    const center = this.target?.center;
 
     if (center) {
       const angle = Math.atan2(
@@ -156,9 +172,8 @@ export class Projectile {
       const xDiff = center.x - this.position.x;
       const yDiff = center.y - this.position.y;
       const distance = Math.hypot(xDiff, yDiff);
-      // console.log(target);
 
-      if (distance < target.radius + this.radius) {
+      if (distance < this.target.radius + this.radius) {
         this.collision = true;
       }
 
