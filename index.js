@@ -1,4 +1,4 @@
-import { c, gridArr } from "./init.js";
+import { c, gridArr, mouse } from "./init.js";
 import { enemies, waves } from "./waves.js";
 
 const image = new Image();
@@ -24,17 +24,6 @@ function animate() {
     enemy.update();
     if (enemy.reachedTower()) {
       enemies.splice(i, 1);
-      console.log("tower health - 1 point");
     }
   }
 }
-
-const mouse = {
-  x: undefined,
-  y: undefined,
-};
-
-window.addEventListener("mousemove", (e) => {
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-});

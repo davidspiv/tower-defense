@@ -4,6 +4,17 @@ const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 const canvasSize = { x: 1280, y: 768 };
 
+const mouse = {
+  x: undefined,
+  y: undefined,
+};
+
+canvas.addEventListener("mousemove", (e) => {
+  const scalar = canvasSize.x / canvas.getBoundingClientRect().width;
+  mouse.x = e.clientX * scalar;
+  mouse.y = e.clientY * scalar;
+});
+
 const initGrid = (rows, cols) => {
   const arr = [];
 
@@ -31,11 +42,8 @@ const createEnemyPath = (startingPoint, enemyVerts) => {
   const updateGrid = (cords) => {
     for (let row of gridArr) {
       for (let el of row) {
-        // if (el.position.x === cords.x) {
-        //   console.log(el.position.y, cords.y);
-        // }
         if (el.position.x === cords.x && el.position.y === cords.y) {
-          el.color = "blue";
+          el.type = "path";
         }
       }
     }
@@ -89,5 +97,4 @@ const enemyWaypoints = [
 
 createEnemyPath(gridArr[6][0].position, enemyWaypoints);
 
-export { c, canvasSize, enemyWaypoints, gridArr };
-//197
+export { c, canvasSize, mouse, enemyWaypoints, gridArr };

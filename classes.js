@@ -60,10 +60,11 @@ export class Enemy {
 }
 
 export class Tile {
-  constructor(position, color = "rgba(255,255,255,.2)") {
+  constructor(position, color = "rgba(0,0,0,0)", type = "empty") {
     this.size = 64;
     this.position = position;
     this.color = color;
+    this.type = type;
   }
 
   draw() {
@@ -77,16 +78,17 @@ export class Tile {
   }
 
   update(mouse) {
+    if (
+      this.type === "empty" &&
+      mouse.x > this.position.x - this.size / 2 &&
+      mouse.x < this.position.x + this.size / 2 &&
+      mouse.y > this.position.y - this.size / 2 &&
+      mouse.y < this.position.y + this.size / 2
+    ) {
+      this.color = "rgba(255,255,255,.2)";
+    } else {
+      this.color = "rgba(0,0,0,.2)";
+    }
     this.draw();
-
-    // if (
-    //   this.color === "rgba(255,255,255,.2)" &&
-    //   mouse.x > this.position.x &&
-    //   mouse.x < this.position.x + this.size / 2 &&
-    //   mouse.y > this.position.y &&
-    //   mouse.y < this.position.y + this.size / 2
-    // ) {
-    //   console.log("collision");
-    // }
   }
 }
