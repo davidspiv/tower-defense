@@ -1,4 +1,5 @@
 import { Tile } from "./classes.js";
+import { debounceLeading } from "./utils.js";
 
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
@@ -13,6 +14,17 @@ canvas.addEventListener("mousemove", (e) => {
   const scalar = canvasSize.x / canvas.getBoundingClientRect().width;
   mouse.x = e.clientX * scalar;
   mouse.y = e.clientY * scalar;
+});
+
+canvas.addEventListener(
+  "mousedown",
+  debounceLeading(() => {
+    mouse.click = "true";
+  })
+);
+
+canvas.addEventListener("mouseup", () => {
+  mouse.click = "false";
 });
 
 const initGrid = (rows, cols) => {

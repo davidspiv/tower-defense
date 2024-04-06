@@ -26,4 +26,6 @@ function animate() {
       enemies.splice(i, 1);
     }
   }
+
+  mouse.click = "false";
 }

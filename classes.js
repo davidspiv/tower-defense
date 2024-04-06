@@ -68,6 +68,11 @@ export class Tile {
   }
 
   draw() {
+    if (this.type === "empty") this.color = "rgba(0,0,0,0)";
+    if (this.type === "path") this.color = "rgba(0,0,0,0)";
+    if (this.type === "selected") this.color = "rgba(255,255,255,.2)";
+    if (this.type === "building") this.color = "brown";
+
     c.fillStyle = this.color;
     c.fillRect(
       this.position.x - this.size / 2,
@@ -77,18 +82,36 @@ export class Tile {
     );
   }
 
-  update(mouse) {
-    if (
-      this.type === "empty" &&
+  isSelected(mouse) {
+    return (
       mouse.x > this.position.x - this.size / 2 &&
       mouse.x < this.position.x + this.size / 2 &&
       mouse.y > this.position.y - this.size / 2 &&
       mouse.y < this.position.y + this.size / 2
-    ) {
-      this.color = "rgba(255,255,255,.2)";
-    } else {
-      this.color = "rgba(0,0,0,.2)";
-    }
-    this.draw();
+    );
   }
+
+  update(mouse) {
+    const updateType = () => {
+      if (this.isSelected(mouse)) {
+        if (mouse.click === "true") {
+          if (this.type === "building") {
+            this.type = "selected";
+          } else {
+            this.type = "building";
+          }
+        } else if (this.type !== "building") {
+          this.type = "selected";
+        }
+      } else if (this.type !== "building") {
+        this.type = "empty";
+      }
+    };
+
+    if (this.type !== "path") {
+      updateType();
+    }
+
+    this.draw();
+  }6
 }
