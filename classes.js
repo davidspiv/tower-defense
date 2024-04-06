@@ -65,6 +65,7 @@ export class Tile {
     this.position = position;
     this.color = color;
     this.type = type;
+    this.projectiles = [];
   }
 
   draw() {
@@ -99,6 +100,12 @@ export class Tile {
             this.type = "selected";
           } else {
             this.type = "building";
+            this.projectiles = [
+              new Projectile({
+                x: this.position.x,
+                y: this.position.y,
+              }),
+            ];
           }
         } else if (this.type !== "building") {
           this.type = "selected";
@@ -113,5 +120,40 @@ export class Tile {
     }
 
     this.draw();
-  }6
+  }
+}
+
+export class Projectile {
+  constructor(position = { x: 0, y: 0 }) {
+    this.position = position;
+    this.velocity = {
+      x: 0,
+      y: 0,
+    };
+    this.radius = 5;
+  }
+
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "black";
+    c.fill();
+  }
+
+  update(enemies) {
+    if (enemies[0]?.center) {
+      const angle = Math.atan2(
+        enemies[0].center.y - this.position.y,
+        enemies[0].center.x - this.position.x
+      );
+
+      this.velocity.x = Math.cos(angle);
+      this.velocity.y = Math.sin(angle);
+
+      this.position.x += this.velocity.x;
+      this.position.y += this.velocity.y;
+    }
+
+    this.draw();
+  }
 }

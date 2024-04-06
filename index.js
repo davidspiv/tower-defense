@@ -14,8 +14,11 @@ function animate() {
   requestAnimationFrame(animate);
   c.drawImage(image, 0, 0);
   for (let row of gridArr) {
-    for (let el of row) {
-      el.update(mouse);
+    for (let tile of row) {
+      tile.update(mouse);
+      for (let projectile of tile.projectiles) {
+        projectile.update(enemies);
+      }
     }
   }
 
