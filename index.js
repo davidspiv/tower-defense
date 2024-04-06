@@ -16,8 +16,13 @@ function animate() {
   for (let row of gridArr) {
     for (let tile of row) {
       tile.update(mouse);
-      for (let projectile of tile.projectiles) {
-        projectile.update(enemies);
+
+      for (let i = tile.projectiles.length - 1; i >= 0; i--) {
+        tile.projectiles[i].update(enemies);
+        if (tile.projectiles[i].collision === true) {
+          tile.projectiles.splice(i, 1);
+          console.log("enemy health - 1");
+        }
       }
     }
   }
@@ -27,6 +32,7 @@ function animate() {
     enemy.update();
     if (enemy.reachedTower()) {
       enemies.splice(i, 1);
+      console.log("tower health - 1");
     }
   }
 

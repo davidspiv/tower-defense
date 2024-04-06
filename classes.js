@@ -2,20 +2,21 @@ import { c, enemyWaypoints } from "./init.js";
 
 export class Enemy {
   constructor() {
-    this.width = 40;
-    this.height = 40;
-    this.position = { x: 0, y: enemyWaypoints[0].y - this.width / 2 };
+    this.radius = 30;
+    this.position = { x: 0, y: enemyWaypoints[0].y - this.radius / 2 };
     this.waypointIndex = 0;
     this.center = {
-      x: this.position.x + this.width / 2,
-      y: this.position.y + this.height / 2,
+      x: this.position.x + this.radius / 2,
+      y: this.position.y + this.radius / 2,
     };
     this.speedScalar = 1;
   }
 
   draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
     c.fillStyle = "white";
-    c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    c.fill();
   }
 
   update() {
@@ -30,8 +31,8 @@ export class Enemy {
     };
 
     this.center = {
-      x: this.position.x + this.width / 2,
-      y: this.position.y + this.width / 2,
+      x: this.position.x + this.radius / 2,
+      y: this.position.y + this.radius / 2,
     };
 
     this.draw();
@@ -49,11 +50,11 @@ export class Enemy {
     return (
       Math.round(this.position.x) ===
         Math.round(
-          enemyWaypoints[enemyWaypoints.length - 1].x - this.width / 2
+          enemyWaypoints[enemyWaypoints.length - 1].x - this.radius / 2
         ) &&
       Math.round(this.position.y) ===
         Math.round(
-          enemyWaypoints[enemyWaypoints.length - 1].y - this.height / 2
+          enemyWaypoints[enemyWaypoints.length - 1].y - this.radius / 2
         )
     );
   }
@@ -126,11 +127,13 @@ export class Tile {
 export class Projectile {
   constructor(position = { x: 0, y: 0 }) {
     this.position = position;
+    this.scalar = 2.2;
     this.velocity = {
       x: 0,
       y: 0,
     };
     this.radius = 5;
+    this.collision = false;
   }
 
   draw() {
@@ -141,14 +144,26 @@ export class Projectile {
   }
 
   update(enemies) {
-    if (enemies[0]?.center) {
+    const target = enemies[enemies.length - 1];
+    const center = target?.center;
+
+    if (center) {
       const angle = Math.atan2(
-        enemies[0].center.y - this.position.y,
-        enemies[0].center.x - this.position.x
+        center.y - this.position.y,
+        center.x - this.position.x
       );
 
-      this.velocity.x = Math.cos(angle);
-      this.velocity.y = Math.sin(angle);
+      const xDiff = center.x - this.position.x;
+      const yDiff = center.y - this.position.y;
+      const distance = Math.hypot(xDiff, yDiff);
+      // console.log(target);
+
+      if (distance < target.radius + this.radius) {
+        this.collision = true;
+      }
+
+      this.velocity.x = Math.cos(angle) * this.scalar;
+      this.velocity.y = Math.sin(angle) * this.scalar;
 
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
