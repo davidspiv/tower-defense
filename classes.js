@@ -9,14 +9,33 @@ export class Enemy {
       x: this.position.x + this.radius / 2,
       y: this.position.y + this.radius / 2,
     };
-    this.speedScalar = 1;
+    this.speed = 1;
+    this.health = 100;
   }
 
   draw() {
+    //body
     c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2);
     c.fillStyle = "white";
     c.fill();
+
+    //health bar
+    c.fillStyle = "red";
+    c.fillRect(
+      this.center.x - this.radius,
+      this.center.y - this.radius - 15,
+      this.radius * 2,
+      10
+    );
+
+    c.fillStyle = "green";
+    c.fillRect(
+      this.center.x - this.radius,
+      this.center.y - this.radius - 15,
+      this.radius * 2 * (this.health / 100),
+      10
+    );
   }
 
   update() {
@@ -26,8 +45,8 @@ export class Enemy {
     const angle = Math.atan2(yDistance, xDistance);
 
     this.position = {
-      x: this.position.x + Math.cos(angle) * this.speedScalar,
-      y: this.position.y + Math.sin(angle) * this.speedScalar,
+      x: this.position.x + Math.cos(angle) * this.speed,
+      y: this.position.y + Math.sin(angle) * this.speed,
     };
 
     this.center = {
@@ -75,7 +94,7 @@ export class Tile {
     if (this.type === "empty") this.color = "rgba(0,0,0,0)";
     if (this.type === "path") this.color = "rgba(0,0,0,0)";
     if (this.type === "selected") this.color = "rgba(255,255,255,.2)";
-    if (this.type === "building") this.color = "brown";
+    if (this.type === "tower") this.color = "brown";
 
     c.fillStyle = this.color;
     c.fillRect(
@@ -102,15 +121,14 @@ export class Tile {
 
   update(mouse) {
     const updateType = () => {
-      if (this.type !== "building") {
-        if (this.isSelected(mouse)) {
-          this.type = "selected";
-        } else {
-          this.type = "empty";
-        }
+      if (this.isSelected(mouse)) {
+        this.type = "selected";
+      } else {
+        this.type = "empty";
       }
     };
-    if (this.type !== "path") {
+
+    if (this.type !== "path" && this.type !== "tower") {
       updateType();
     }
 
@@ -118,11 +136,12 @@ export class Tile {
   }
 }
 
-export class Building extends Tile {
+export class Tower extends Tile {
   constructor(position, type, color = "brown") {
     super(position, color, type);
     this.projectiles = [];
     this.range = 250;
+    this.rpm = 200;
   }
 
   buildTargetArr(enemies) {
@@ -138,7 +157,7 @@ export class Building extends Tile {
 
   fire(enemies) {
     const targets = this.buildTargetArr(enemies);
-    if (targets.length > 0 && this.projectiles.length === 0) {
+    if (targets.length > 0) {
       this.projectiles.push(
         new Projectile(
           {

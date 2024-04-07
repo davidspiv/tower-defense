@@ -1,4 +1,4 @@
-import { Tile, Building } from "./classes.js";
+import { Tile, Tower } from "./classes.js";
 import { debounceLeading } from "./utils.js";
 
 const canvas = document.querySelector("canvas");
@@ -24,8 +24,8 @@ canvas.addEventListener(
     const col = Math.floor(mouse.x / 64);
     const position = gridArr[row][col].position;
     const type = gridArr[row][col].type;
-    if (type != "building") {
-      gridArr[row][col] = new Building(position, "building");
+    if (type != "tower") {
+      gridArr[row][col] = new Tower(position, "tower");
     } else {
       gridArr[row][col] = new Tile(position, "selected");
     }
