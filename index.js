@@ -4,37 +4,54 @@ import { enemies, waves } from "./waves.js";
 const image = new Image();
 image.src = "img/map.png";
 image.onload = () => {
-  animate();
-  for (let wave of waves) {
-    wave();
-  }
+  step();
+  waves[0]();
 };
 
-function animate() {
-  requestAnimationFrame(animate);
-  c.drawImage(image, 0, 0);
-  for (let row of gridArr) {
-    for (let tile of row) {
-      tile.update(mouse);
-      if (tile.type === "tower") towerState(tile);
+function step() {
+  const timeStamp = document.timeline.currentTime;
+  let start, previousTimeStamp;
+  let done = false;
+
+  if (start === undefined) {
+    start = timeStamp;
+  }
+  const elapsed = timeStamp - start;
+
+  if (previousTimeStamp !== timeStamp) {
+    const count = Math.min(0.1 * elapsed, 200);
+    c.drawImage(image, 0, 0);
+    for (let row of gridArr) {
+      for (let tile of row) {
+        tile.update(mouse);
+        if (tile.type === "tower") towerState(tile, timeStamp);
+      }
     }
+
+    for (let i = 0; i < enemies.length; i++) {
+      const enemy = enemies[i];
+      if (enemy.health <= 0) {
+        enemies.splice(i, 1);
+        continue;
+      }
+      enemy.update();
+      if (enemy.reachedTower()) {
+        enemies.splice(i, 1);
+      }
+    }
+    if (count === 200) done = true;
   }
 
-  for (let i = 0; i < enemies.length; i++) {
-    const enemy = enemies[i];
-    if (enemy.health <= 0) {
-      enemies.splice(i, 1);
-      continue;
-    }
-    enemy.update();
-    if (enemy.reachedTower()) {
-      enemies.splice(i, 1);
+  if (elapsed < 2000) {
+    // Stop the animation after 2 seconds
+    previousTimeStamp = timeStamp;
+    if (!done) {
+      window.requestAnimationFrame(step);
     }
   }
 }
 
-const towerState = (tower) => {
-  //State should be based on external interval; currently based on how far away last "round" is from tower
+const towerState = (tower, timeStamp) => {
   const projectiles = tower.projectiles;
   const lastProjectile = projectiles[projectiles.length - 1];
   let dist;
@@ -44,7 +61,7 @@ const towerState = (tower) => {
     dist = Math.hypot(a, b);
   }
 
-  if (dist > tower.rpm || dist === undefined) {
+  if (timeStamp % 10 > tower.rpm || dist === undefined) {
     tower.fire(enemies);
   }
 

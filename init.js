@@ -24,10 +24,12 @@ canvas.addEventListener(
     const col = Math.floor(mouse.x / 64);
     const position = gridArr[row][col].position;
     const type = gridArr[row][col].type;
-    if (type != "tower") {
-      gridArr[row][col] = new Tower(position, "tower");
-    } else {
-      gridArr[row][col] = new Tile(position, "selected");
+    if (type !== "path") {
+      if (type != "tower") {
+        gridArr[row][col] = new Tower(position, "tower");
+      } else {
+        gridArr[row][col] = new Tile(position, "selected");
+      }
     }
   })
 );

@@ -142,6 +142,7 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 200;
+    this.roundVel = 2.2;
   }
 
   buildTargetArr(enemies) {
@@ -164,7 +165,8 @@ export class Tower extends Tile {
             x: this.position.x,
             y: this.position.y,
           },
-          targets[targets.length - 1]
+          targets[targets.length - 1],
+          this.roundVel
         )
       );
     }
@@ -172,16 +174,16 @@ export class Tower extends Tile {
 }
 
 export class Projectile {
-  constructor(position = { x: 0, y: 0 }, target) {
+  constructor(position = { x: 0, y: 0 }, target, scalar) {
     this.position = position;
-    this.scalar = 2.2;
+    this.target = target;
+    this.scalar = scalar;
+    this.radius = 5;
     this.velocity = {
       x: 0,
       y: 0,
     };
-    this.radius = 5;
     this.collision = false;
-    this.target = target;
   }
 
   draw() {
