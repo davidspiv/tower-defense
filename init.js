@@ -1,9 +1,10 @@
-import { Tile } from "./classes.js";
+import { Tile, Building } from "./classes.js";
 import { debounceLeading } from "./utils.js";
 
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 const canvasSize = { x: 1280, y: 768 };
+const gridSize = { x: 20, y: 12 };
 
 const mouse = {
   x: undefined,
@@ -19,7 +20,15 @@ canvas.addEventListener("mousemove", (e) => {
 canvas.addEventListener(
   "mousedown",
   debounceLeading(() => {
-    mouse.click = "true";
+    const row = Math.floor(mouse.y / 64);
+    const col = Math.floor(mouse.x / 64);
+    const position = gridArr[row][col].position;
+    const type = gridArr[row][col].type;
+    if (type != "building") {
+      gridArr[row][col] = new Building(position, "building");
+    } else {
+      gridArr[row][col] = new Tile(position, "selected");
+    }
   })
 );
 
@@ -42,7 +51,7 @@ const initGrid = (rows, cols) => {
         x: (canvasSize.x / cols) * colNum + canvasSize.x / (cols * 2),
         y: (canvasSize.y / rows) * rowNum + canvasSize.y / (rows * 2),
       };
-      arr[rowNum].push(new Tile(cords));
+      arr[rowNum].push(new Tile(cords, "empty"));
     }
   }
   return arr;
@@ -93,7 +102,7 @@ const createEnemyPath = (startingPoint, enemyVerts) => {
   }
 };
 
-const gridArr = initGrid(12, 20);
+const gridArr = initGrid(gridSize.y, gridSize.x);
 
 const enemyWaypoints = [
   gridArr[6][3].position,

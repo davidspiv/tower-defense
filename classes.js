@@ -102,28 +102,14 @@ export class Tile {
 
   update(mouse) {
     const updateType = () => {
-      if (this.isSelected(mouse)) {
-        if (mouse.click === "true") {
-          if (this.type === "building") {
-            this.type = "selected";
-          } else {
-            this.type = "building";
-            this.projectiles = [
-              new Projectile({
-                x: this.position.x,
-                y: this.position.y,
-              }),
-            ];
-            this.range = 250;
-          }
-        } else if (this.type !== "building") {
+      if (this.type !== "building") {
+        if (this.isSelected(mouse)) {
           this.type = "selected";
+        } else {
+          this.type = "empty";
         }
-      } else if (this.type !== "building") {
-        this.type = "empty";
       }
     };
-
     if (this.type !== "path") {
       updateType();
     }
@@ -132,8 +118,42 @@ export class Tile {
   }
 }
 
+export class Building extends Tile {
+  constructor(position, type, color = "brown") {
+    super(position, color, type);
+    this.projectiles = [];
+    this.range = 250;
+  }
+
+  buildTargetArr(enemies) {
+    const validEnemies = enemies.filter((enemy) => {
+      const xDiff = enemy.position.x - this.position.x;
+      const yDiff = enemy.position.y - this.position.y;
+      const distance = Math.hypot(xDiff, yDiff);
+      return distance < enemy.radius + this.range;
+    });
+
+    return validEnemies;
+  }
+
+  fire(enemies) {
+    const targets = this.buildTargetArr(enemies);
+    if (targets.length > 0 && this.projectiles.length === 0) {
+      this.projectiles.push(
+        new Projectile(
+          {
+            x: this.position.x,
+            y: this.position.y,
+          },
+          targets[targets.length - 1]
+        )
+      );
+    }
+  }
+}
+
 export class Projectile {
-  constructor(position = { x: 0, y: 0 }) {
+  constructor(position = { x: 0, y: 0 }, target) {
     this.position = position;
     this.scalar = 2.2;
     this.velocity = {
@@ -142,7 +162,7 @@ export class Projectile {
     };
     this.radius = 5;
     this.collision = false;
-    this.target;
+    this.target = target;
   }
 
   draw() {
@@ -152,15 +172,7 @@ export class Projectile {
     c.fill();
   }
 
-  update(enemies, building) {
-    const validEnemies = enemies.filter((enemy) => {
-      const xDiff = enemy.position.x - building.position.x;
-      const yDiff = enemy.position.y - building.position.y;
-      const distance = Math.hypot(xDiff, yDiff);
-      return distance < enemy.radius + building.range;
-    });
-
-    this.target = validEnemies[validEnemies.length - 1];
+  update() {
     const center = this.target?.center;
 
     if (center) {
