@@ -8,12 +8,14 @@ const addEnemy = () => {
   enemies.unshift(enemy);
 };
 
-const wave = () => {
-  if (enemies.length >= 10) return;
+const wave = (count = 0) => {
+  if (count > 10) return;
+  console.log(count);
   setTimeout(() => {
     addEnemy();
-    wave();
+    wave(count);
   }, 1000);
+  count += 1;
 };
 
 waves.push(wave);

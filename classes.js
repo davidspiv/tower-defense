@@ -174,12 +174,12 @@ export class Tower extends Tile {
 }
 
 export class Projectile {
-  constructor(position = { x: 0, y: 0 }, target, scalar) {
+  constructor(position = { x: 0, y: 0 }, target, velocity) {
     this.position = position;
     this.target = target;
-    this.scalar = scalar;
+    this.velocity = velocity;
     this.radius = 5;
-    this.velocity = {
+    this.nextPosition = {
       x: 0,
       y: 0,
     };
@@ -210,11 +210,11 @@ export class Projectile {
         this.collision = true;
       }
 
-      this.velocity.x = Math.cos(angle) * this.scalar;
-      this.velocity.y = Math.sin(angle) * this.scalar;
+      this.nextPosition.x = Math.cos(angle) * this.velocity;
+      this.nextPosition.y = Math.sin(angle) * this.velocity;
 
-      this.position.x += this.velocity.x;
-      this.position.y += this.velocity.y;
+      this.position.x += this.nextPosition.x;
+      this.position.y += this.nextPosition.y;
     }
 
     this.draw();
