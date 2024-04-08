@@ -9,8 +9,7 @@ const addEnemy = () => {
 };
 
 const wave = (count = 0) => {
-  if (count > 10) return;
-  console.log(count);
+  if (count > 2) return;
   setTimeout(() => {
     addEnemy();
     wave(count);

@@ -171,6 +171,29 @@ export class Tower extends Tile {
       );
     }
   }
+
+  state(enemies, timeStamp) {
+    const projectiles = this.projectiles;
+    const lastProjectile = projectiles[projectiles.length - 1];
+    let dist;
+    if (projectiles.length > 0) {
+      const a = lastProjectile.position.x - this.position.x;
+      const b = lastProjectile.position.y - this.position.y;
+      dist = Math.hypot(a, b);
+    }
+
+    if (timeStamp % 10 > this.rpm || dist === undefined) {
+      this.fire(enemies);
+    }
+
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      this.projectiles[i].update(enemies, this);
+      if (this.projectiles[i].collision === true) {
+        this.projectiles[i].target.health -= 20;
+        this.projectiles.splice(i, 1);
+      }
+    }
+  }
 }
 
 export class Projectile {
