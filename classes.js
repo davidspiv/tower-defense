@@ -130,7 +130,7 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 500;
-    this.projVelocity = 3;
+    this.projVelocity = 2;
     this.projDamage = 10;
     this.tracking = false;
     this.lastProjTimestamp;
@@ -182,17 +182,21 @@ export class Tower extends Tile {
 
       const distance = Math.hypot(xDiff, yDiff);
 
+      if (i > target.path.length) {
+        console.log("test");
+      }
+
       if (
         Math.round(distance / 10) ===
         Math.round(((i - startFrame) * this.projVelocity) / 10)
       ) {
-        console.log("test");
         return Math.atan2(
           target.path[i].y - this.position.y,
           target.path[i].x - this.position.x
         );
       }
     }
+    console.log("calcIntersect didn't work");
   }
 
   fire(target, intersectAngle) {
