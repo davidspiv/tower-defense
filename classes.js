@@ -131,9 +131,8 @@ export class Tower extends Tile {
     this.rpm = 500;
     this.projVelocity = 5;
     this.projDamage = 10;
-    this.tracking = true;
+    this.tracking = false;
     this.lastProjTimestamp;
-    this.intersectAngle;
   }
 
   projectileState(enemies, timeStamp) {
@@ -143,10 +142,12 @@ export class Tower extends Tile {
     if (targets.length > 0) {
       const target = targets[targets.length - 1];
       if (timeStamp - timeSinceLastShot > this.rpm) {
+        let intersectAngle;
         if (this.tracking === false) {
-          this.calcIntersect(target);
+          intersectAngle = this.calcIntersect(target);
+          console.log(intersectAngle);
         }
-        this.fire(target, timeStamp);
+        this.fire(target, intersectAngle);
         this.lastProjTimestamp = timeStamp;
       }
     }
@@ -173,16 +174,13 @@ export class Tower extends Tile {
   }
 
   calcIntersect(target) {
-    // console.log(target.frame);
     for (let i = target.frame; i < target.path.length; i++) {
       const xDiff = Math.abs(target.path[i].x) - Math.abs(this.position.x);
       const yDiff = Math.abs(target.path[i].y) - Math.abs(this.position.y);
       const distance = Math.hypot(xDiff, yDiff);
       if (distance > this.range) break;
-      // console.log(xDiff, yDiff);
       if (Math.round(distance) === i) {
-        console.log("test");
-        this.intersectAngle = Math.atan2(
+        return Math.atan2(
           target.path[i].y - this.position.y,
           target.path[i].x - this.position.x
         );
@@ -190,7 +188,7 @@ export class Tower extends Tile {
     }
   }
 
-  fire(target) {
+  fire(target, intersectAngle) {
     this.projectiles.push(
       new Projectile(
         {
@@ -200,7 +198,7 @@ export class Tower extends Tile {
         target,
         this.projVelocity,
         this.projDamage,
-        this.intersectAngle
+        intersectAngle
       )
     );
   }
