@@ -7,14 +7,9 @@ const c = canvas.getContext("2d");
 const canvasSize = { x: 1280, y: 768 };
 const gridSize = { x: 20, y: 12 };
 
-const mouse = {
-  x: undefined,
-  y: undefined,
-};
-
 const gridArr = initGrid(gridSize.y, gridSize.x);
 
-// RULES FOR CREATING WAYPOINTS
+// CREATING WAYPOINTS
 // gridArr[min: 0; max: gridSize.x - 1][min: 0; max: gridSize.y - 1];
 // must create 90 deg intersections
 // final waypoint = gridArr[max][Math.floor(max/2)]
@@ -35,6 +30,11 @@ initEnemyPath(gridArr, gridArr[6][0].position, enemyWaypoints);
 
 //using the gridArr path, create array of positions to pass to each new enemy
 const enemyPath = calculateEnemySteps(enemyWaypoints);
+
+const mouse = {
+  x: undefined,
+  y: undefined,
+};
 
 canvas.addEventListener("mousemove", (e) => {
   const scalar = canvasSize.x / canvas.getBoundingClientRect().width;
