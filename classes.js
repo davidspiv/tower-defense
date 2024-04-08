@@ -144,6 +144,7 @@ export class Tower extends Tile {
     this.rpm = 500;
     this.projVelocity = 5;
     this.projDamage = 10;
+    this.lastProjTimestamp;
   }
 
   buildTargetArr(enemies) {
@@ -157,7 +158,7 @@ export class Tower extends Tile {
     return validEnemies;
   }
 
-  fire(enemies, timeStamp) {
+  fire(enemies) {
     const targets = this.buildTargetArr(enemies);
     if (targets.length > 0) {
       this.projectiles.push(
@@ -166,7 +167,6 @@ export class Tower extends Tile {
             x: this.position.x,
             y: this.position.y,
           },
-          timeStamp,
           targets[targets.length - 1],
           this.projVelocity,
           this.projDamage
@@ -175,20 +175,19 @@ export class Tower extends Tile {
     }
   }
 
-  state(enemies, timeStamp) {
-    const projectiles = this.projectiles;
-    const lastProjectile = projectiles[projectiles.length - 1];
-    // console.log(timeStamp - lastProjectile?.timeStamp);
-    let interval = lastProjectile?.timeStamp;
-    if (interval === undefined) interval = 0;
-    if (timeStamp - interval > this.rpm) {
+  projectileState(enemies, timeStamp) {
+    let timeSinceLastShot = this.lastProjTimestamp;
+    if (timeSinceLastShot === undefined) timeSinceLastShot = 0;
+    if (timeStamp - timeSinceLastShot > this.rpm) {
       this.fire(enemies, timeStamp);
+      this.lastProjTimestamp = timeStamp;
     }
 
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
-      this.projectiles[i].update(enemies, this);
-      if (this.projectiles[i].collision === true) {
-        this.projectiles[i].target.health -= this.projectiles[i].projDamage;
+      const projectile = this.projectiles[i];
+      projectile.update(enemies, this);
+      if (projectile.collision === true) {
+        projectile.target.health -= projectile.projDamage;
         this.projectiles.splice(i, 1);
       }
     }
@@ -196,15 +195,8 @@ export class Tower extends Tile {
 }
 
 export class Projectile {
-  constructor(
-    position = { x: 0, y: 0 },
-    timeStamp,
-    target,
-    projVelocity,
-    projDamage
-  ) {
+  constructor(position = { x: 0, y: 0 }, target, projVelocity, projDamage) {
     this.position = position;
-    this.timeStamp = timeStamp;
     this.target = target;
     this.projVelocity = projVelocity;
     this.projDamage = projDamage;
