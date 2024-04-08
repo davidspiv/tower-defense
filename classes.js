@@ -142,7 +142,8 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 200;
-    this.roundVel = 2.2;
+    this.projVelocity = 5;
+    this.projDamage = 10;
   }
 
   buildTargetArr(enemies) {
@@ -166,7 +167,8 @@ export class Tower extends Tile {
             y: this.position.y,
           },
           targets[targets.length - 1],
-          this.roundVel
+          this.projVelocity,
+          this.projDamage
         )
       );
     }
@@ -189,7 +191,7 @@ export class Tower extends Tile {
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       this.projectiles[i].update(enemies, this);
       if (this.projectiles[i].collision === true) {
-        this.projectiles[i].target.health -= 20;
+        this.projectiles[i].target.health -= this.projectiles[i].projDamage;
         this.projectiles.splice(i, 1);
       }
     }
@@ -197,10 +199,11 @@ export class Tower extends Tile {
 }
 
 export class Projectile {
-  constructor(position = { x: 0, y: 0 }, target, velocity) {
+  constructor(position = { x: 0, y: 0 }, target, projVelocity, projDamage) {
     this.position = position;
     this.target = target;
-    this.velocity = velocity;
+    this.projVelocity = projVelocity;
+    this.projDamage = projDamage;
     this.radius = 5;
     this.nextPosition = {
       x: 0,
@@ -233,8 +236,8 @@ export class Projectile {
         this.collision = true;
       }
 
-      this.nextPosition.x = Math.cos(angle) * this.velocity;
-      this.nextPosition.y = Math.sin(angle) * this.velocity;
+      this.nextPosition.x = Math.cos(angle) * this.projVelocity;
+      this.nextPosition.y = Math.sin(angle) * this.projVelocity;
 
       this.position.x += this.nextPosition.x;
       this.position.y += this.nextPosition.y;

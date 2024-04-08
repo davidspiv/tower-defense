@@ -29,7 +29,7 @@ function step() {
       }
     }
 
-    enemyState();
+    waveState();
 
     if (count === 200) done = true;
   }
@@ -42,7 +42,7 @@ function step() {
   }
 }
 
-const enemyState = () => {
+const waveState = () => {
   for (let i = 0; i < enemies.length; i++) {
     const enemy = enemies[i];
     if (enemy.health <= 0) {
