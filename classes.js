@@ -42,62 +42,60 @@ export class Enemy {
   calculatePath() {
     this.path = [];
     for (let i = 0; i < enemyWaypoints.length; i++) {
-      const position = {
+      const currentPosition = {
         x: enemyWaypoints[i].x - this.radius / 2,
         y: enemyWaypoints[i].y - this.radius / 2,
       };
-      const nextPosition = {
+      const nextWaypoint = {
         x: enemyWaypoints[i + 1]?.x - this.radius / 2,
         y: enemyWaypoints[i + 1]?.y - this.radius / 2,
       };
-      if (isNaN(nextPosition.x)) {
-        nextPosition.x = position.x;
-        nextPosition.y = position.y;
+      if (isNaN(nextWaypoint.x)) {
+        nextWaypoint.x = currentPosition.x;
+        nextWaypoint.y = currentPosition.y;
       }
       const distance = {
-        x: nextPosition.x - position.x,
-        y: nextPosition.y - position.y,
+        x: nextWaypoint.x - currentPosition.x,
+        y: nextWaypoint.y - currentPosition.y,
       };
+
       const diff = { x: 0, y: 0 };
       if (Math.abs(distance.x) > 0) {
         for (let i = 1; i <= Math.abs(distance.x); i++) {
-          // console.log(this.position.x);
           if (distance.x > 0) {
-            diff.x = this.position.x + 1 * i;
-            // console.log("right");
+            //right
+            diff.x = 1 * i;
           } else {
-            diff.y = this.position.x - 1 * i;
-            // console.log("left");
+            //left
+            diff.x = -1 * i;
           }
-          this.path.push({ x: this.position.x + diff.x, y: diff.y });
+          this.path.push({
+            x: currentPosition.x + diff.x,
+            y: currentPosition.y,
+          });
         }
       } else {
         for (let i = 0; i <= Math.abs(distance.y); i++) {
           if (distance.y > 0) {
-            diff.y = diff.y + 1 * i;
-            // console.log("up");
+            //up
+            diff.y = 1 * i;
           } else {
-            diff.y = diff.y - 1 * i;
-            // console.log("down");
+            //down
+            diff.y = -1 * i;
           }
-          this.path.push({ x: this.position.x + diff.x, y: diff.y });
+          this.path.push({
+            x: currentPosition.x,
+            y: currentPosition.y + diff.y,
+          });
         }
       }
     }
-    console.log(this.path);
   }
 
   update() {
-    // this.position = this.path[this.frame];
-    const waypoint = enemyWaypoints[this.waypointIndex];
-    const yDistance = waypoint.y - this.center.y;
-    const xDistance = waypoint.x - this.center.x;
-    const angle = Math.atan2(yDistance, xDistance);
 
-    this.position = {
-      x: this.position.x + Math.cos(angle) * this.speed,
-      y: this.position.y + Math.sin(angle) * this.speed,
-    };
+
+    this.position = this.path[this.frame];
 
     this.center = {
       x: this.position.x + this.radius / 2,
@@ -105,14 +103,7 @@ export class Enemy {
     };
 
     this.draw();
-
-    if (
-      Math.round(this.center.x) === waypoint.x &&
-      Math.round(this.center.y) === waypoint.y &&
-      this.waypointIndex < enemyWaypoints.length - 1
-    ) {
-      this.waypointIndex++;
-    }
+    this.frame += 1;
   }
 
   reachedBase() {
@@ -251,7 +242,7 @@ export class Projectile {
     this.projVelocity = projVelocity;
     this.projDamage = projDamage;
     this.radius = 5;
-    this.nextPosition = {
+    this.nextWaypoint = {
       x: 0,
       y: 0,
     };
@@ -282,11 +273,11 @@ export class Projectile {
         this.collision = true;
       }
 
-      this.nextPosition.x = Math.cos(angle) * this.projVelocity;
-      this.nextPosition.y = Math.sin(angle) * this.projVelocity;
+      this.nextWaypoint.x = Math.cos(angle) * this.projVelocity;
+      this.nextWaypoint.y = Math.sin(angle) * this.projVelocity;
 
-      this.position.x += this.nextPosition.x;
-      this.position.y += this.nextPosition.y;
+      this.position.x += this.nextWaypoint.x;
+      this.position.y += this.nextWaypoint.y;
     }
 
     this.draw();
