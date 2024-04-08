@@ -11,6 +11,7 @@ export class Enemy {
     };
     this.speed = 1;
     this.health = 100;
+    this.frame = 0;
   }
 
   draw() {
@@ -38,11 +39,61 @@ export class Enemy {
     );
   }
 
+  calculatePath() {
+    this.path = [];
+    for (let i = 0; i < enemyWaypoints.length; i++) {
+      const position = {
+        x: enemyWaypoints[i].x - this.radius / 2,
+        y: enemyWaypoints[i].y - this.radius / 2,
+      };
+      const nextPosition = {
+        x: enemyWaypoints[i + 1]?.x - this.radius / 2,
+        y: enemyWaypoints[i + 1]?.y - this.radius / 2,
+      };
+      if (isNaN(nextPosition.x)) {
+        nextPosition.x = position.x;
+        nextPosition.y = position.y;
+      }
+      const distance = {
+        x: nextPosition.x - position.x,
+        y: nextPosition.y - position.y,
+      };
+      const diff = { x: 0, y: 0 };
+      if (Math.abs(distance.x) > 0) {
+        for (let i = 1; i <= Math.abs(distance.x); i++) {
+          // console.log(this.position.x);
+          if (distance.x > 0) {
+            diff.x = this.position.x + 1 * i;
+            // console.log("right");
+          } else {
+            diff.y = this.position.x - 1 * i;
+            // console.log("left");
+          }
+          this.path.push({ x: this.position.x + diff.x, y: diff.y });
+        }
+      } else {
+        for (let i = 0; i <= Math.abs(distance.y); i++) {
+          if (distance.y > 0) {
+            diff.y = diff.y + 1 * i;
+            // console.log("up");
+          } else {
+            diff.y = diff.y - 1 * i;
+            // console.log("down");
+          }
+          this.path.push({ x: this.position.x + diff.x, y: diff.y });
+        }
+      }
+    }
+    // console.log(this.path);
+  }
+
   update() {
-    const waypoint = enemyWaypoints[this.waypointIndex];
-    const yDistance = waypoint.y - this.center.y;
-    const xDistance = waypoint.x - this.center.x;
-    const angle = Math.atan2(yDistance, xDistance);
+    // this.position = this.path[this.frame];
+
+    const angle = Math.atan2(
+      this.position - this.position.y,
+      this.center.x - this.position.x
+    );
 
     this.position = {
       x: this.position.x + Math.cos(angle) * this.speed,
@@ -55,6 +106,7 @@ export class Enemy {
     };
 
     this.draw();
+    this.frame += 1;
 
     if (
       Math.round(this.center.x) === waypoint.x &&
@@ -65,7 +117,7 @@ export class Enemy {
     }
   }
 
-  reachedTower() {
+  reachedBase() {
     return (
       Math.round(this.position.x) ===
         Math.round(

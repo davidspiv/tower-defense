@@ -50,7 +50,7 @@ const waveState = () => {
       continue;
     }
     enemy.update();
-    if (enemy.reachedTower()) {
+    if (enemy.reachedBase()) {
       enemies.splice(i, 1);
     }
   }

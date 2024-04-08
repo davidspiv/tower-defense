@@ -4,6 +4,7 @@ let enemies = [];
 
 const addEnemy = () => {
   const enemy = new Enemy();
+  enemy.calculatePath();
   enemies.unshift(enemy);
 };
 
