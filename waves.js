@@ -1,7 +1,6 @@
 import { Enemy } from "./classes.js";
 
 let enemies = [];
-let waves = [];
 
 const addEnemy = () => {
   const enemy = new Enemy();
@@ -17,6 +16,6 @@ const wave = (count = 0) => {
   count += 1;
 };
 
-waves.push(wave);
+const waveArr = [wave];
 
-export { enemies, waves };
+export { waveArr, enemies };

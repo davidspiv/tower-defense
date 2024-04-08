@@ -1,5 +1,5 @@
 import { c, gridArr, mouse } from "./init.js";
-import { enemies, waves } from "./waves.js";
+import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
 
 const image = new Image();
@@ -29,21 +29,7 @@ function step() {
       }
     }
 
-    for (let i = 0; i < enemies.length; i++) {
-      const enemy = enemies[i];
-      if (enemy.health <= 0) {
-        enemies.splice(i, 1);
-        continue;
-      }
-      enemy.update();
-      if (enemy.reachedTower()) {
-        enemies.splice(i, 1);
-      }
-    }
-
-    if (enemies.length === 0) {
-      spawnEnemies();
-    }
+    enemyState();
 
     if (count === 200) done = true;
   }
@@ -56,6 +42,24 @@ function step() {
   }
 }
 
-const spawnEnemies = debounceLeading(() => {
-  waves[0]();
+const enemyState = () => {
+  for (let i = 0; i < enemies.length; i++) {
+    const enemy = enemies[i];
+    if (enemy.health <= 0) {
+      enemies.splice(i, 1);
+      continue;
+    }
+    enemy.update();
+    if (enemy.reachedTower()) {
+      enemies.splice(i, 1);
+    }
+  }
+
+  if (enemies.length === 0) {
+    newWave();
+  }
+};
+
+const newWave = debounceLeading(() => {
+  waveArr[0]();
 });
