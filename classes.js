@@ -93,8 +93,6 @@ export class Enemy {
   }
 
   update() {
-
-
     this.position = this.path[this.frame];
 
     this.center = {
@@ -183,9 +181,36 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 500;
-    this.projVelocity = 5;
+    this.projVelocity = 1;
     this.projDamage = 10;
+    this.tracking = true;
     this.lastProjTimestamp;
+    this.intersectAngle;
+  }
+
+  projectileState(enemies, timeStamp) {
+    let timeSinceLastShot = this.lastProjTimestamp;
+    if (timeSinceLastShot === undefined) timeSinceLastShot = 0;
+    const targets = this.buildTargetArr(enemies);
+    if (targets.length > 0) {
+      const target = targets[targets.length - 1];
+      if (timeStamp - timeSinceLastShot > this.rpm) {
+        if (this.tracking === false) {
+          this.calcIntersect(target);
+        }
+        this.fire(target, timeStamp);
+        this.lastProjTimestamp = timeStamp;
+      }
+    }
+
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      const projectile = this.projectiles[i];
+      projectile.update(enemies, this);
+      if (projectile.collision === true) {
+        projectile.target.health -= projectile.projDamage;
+        this.projectiles.splice(i, 1);
+      }
+    }
   }
 
   buildTargetArr(enemies) {
@@ -199,44 +224,48 @@ export class Tower extends Tile {
     return validEnemies;
   }
 
-  fire(enemies) {
-    const targets = this.buildTargetArr(enemies);
-    if (targets.length > 0) {
-      this.projectiles.push(
-        new Projectile(
-          {
-            x: this.position.x,
-            y: this.position.y,
-          },
-          targets[targets.length - 1],
-          this.projVelocity,
-          this.projDamage
-        )
-      );
+  calcIntersect(target) {
+    // console.log(target.frame);
+    for (let i = target.frame; i < target.path.length; i++) {
+      const xDiff = Math.abs(target.path[i].x) - Math.abs(this.position.x);
+      const yDiff = Math.abs(target.path[i].y) - Math.abs(this.position.y);
+      const distance = Math.hypot(xDiff, yDiff);
+      if (distance > this.range) break;
+      // console.log(xDiff, yDiff);
+      if (Math.round(distance) === i) {
+        console.log("test");
+        this.intersectAngle = Math.atan2(
+          target.path[i].y - this.position.y,
+          target.path[i].x - this.position.x
+        );
+      }
     }
   }
 
-  projectileState(enemies, timeStamp) {
-    let timeSinceLastShot = this.lastProjTimestamp;
-    if (timeSinceLastShot === undefined) timeSinceLastShot = 0;
-    if (timeStamp - timeSinceLastShot > this.rpm) {
-      this.fire(enemies, timeStamp);
-      this.lastProjTimestamp = timeStamp;
-    }
-
-    for (let i = this.projectiles.length - 1; i >= 0; i--) {
-      const projectile = this.projectiles[i];
-      projectile.update(enemies, this);
-      if (projectile.collision === true) {
-        projectile.target.health -= projectile.projDamage;
-        this.projectiles.splice(i, 1);
-      }
-    }
+  fire(target) {
+    this.projectiles.push(
+      new Projectile(
+        {
+          x: this.position.x,
+          y: this.position.y,
+        },
+        target,
+        this.projVelocity,
+        this.projDamage,
+        this.intersectAngle
+      )
+    );
   }
 }
 
 export class Projectile {
-  constructor(position = { x: 0, y: 0 }, target, projVelocity, projDamage) {
+  constructor(
+    position = { x: 0, y: 0 },
+    target,
+    projVelocity,
+    projDamage,
+    intersectAngle
+  ) {
     this.position = position;
     this.target = target;
     this.projVelocity = projVelocity;
@@ -247,6 +276,7 @@ export class Projectile {
       y: 0,
     };
     this.collision = false;
+    this.intersectAngle = intersectAngle;
   }
 
   draw() {
@@ -259,26 +289,29 @@ export class Projectile {
   update() {
     const center = this.target?.center;
 
-    if (center) {
-      const angle = Math.atan2(
-        center.y - this.position.y,
-        center.x - this.position.x
-      );
+    const angle = Math.atan2(
+      center.y - this.position.y,
+      center.x - this.position.x
+    );
 
-      const xDiff = center.x - this.position.x;
-      const yDiff = center.y - this.position.y;
-      const distance = Math.hypot(xDiff, yDiff);
+    const xDiff = center.x - this.position.x;
+    const yDiff = center.y - this.position.y;
+    const distance = Math.hypot(xDiff, yDiff);
 
-      if (distance < this.target.radius + this.radius) {
-        this.collision = true;
-      }
+    if (distance < this.target.radius + this.radius) {
+      this.collision = true;
+    }
 
+    if (this.intersectAngle === undefined) {
       this.nextWaypoint.x = Math.cos(angle) * this.projVelocity;
       this.nextWaypoint.y = Math.sin(angle) * this.projVelocity;
-
-      this.position.x += this.nextWaypoint.x;
-      this.position.y += this.nextWaypoint.y;
+    } else {
+      this.nextWaypoint.x = Math.cos(this.intersectAngle) * this.projVelocity;
+      this.nextWaypoint.y = Math.sin(this.intersectAngle) * this.projVelocity;
     }
+
+    this.position.x += this.nextWaypoint.x;
+    this.position.y += this.nextWaypoint.y;
 
     this.draw();
   }
