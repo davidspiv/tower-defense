@@ -84,16 +84,15 @@ export class Enemy {
         }
       }
     }
-    // console.log(this.path);
+    console.log(this.path);
   }
 
   update() {
     // this.position = this.path[this.frame];
-
-    const angle = Math.atan2(
-      this.position - this.position.y,
-      this.center.x - this.position.x
-    );
+    const waypoint = enemyWaypoints[this.waypointIndex];
+    const yDistance = waypoint.y - this.center.y;
+    const xDistance = waypoint.x - this.center.x;
+    const angle = Math.atan2(yDistance, xDistance);
 
     this.position = {
       x: this.position.x + Math.cos(angle) * this.speed,
@@ -106,7 +105,6 @@ export class Enemy {
     };
 
     this.draw();
-    this.frame += 1;
 
     if (
       Math.round(this.center.x) === waypoint.x &&
