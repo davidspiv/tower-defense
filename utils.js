@@ -11,4 +11,12 @@ const debounceLeading = (func, timeout = 100) => {
   };
 };
 
-export { debounceLeading };
+const diff = (num1, num2) => {
+  if (num1 > num2) {
+    return num1 - num2;
+  } else {
+    return num2 - num1;
+  }
+};
+
+export { debounceLeading, diff };
