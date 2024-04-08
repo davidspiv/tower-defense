@@ -1,4 +1,4 @@
-import { initGrid, createEnemyPath, calculatePath } from "./initHelpers.js";
+import { initGrid, initEnemyPath, calculateEnemySteps } from "./initHelpers.js";
 import { debounceLeading } from "./utils.js";
 import { Tile, Tower } from "./classes.js";
 
@@ -30,11 +30,11 @@ const enemyWaypoints = [
   gridArr[7][19].position,
 ];
 
-//update gridArr to include paths
-createEnemyPath(gridArr, gridArr[6][0].position, enemyWaypoints);
+//create paths from waypoints and update gridArr
+initEnemyPath(gridArr, gridArr[6][0].position, enemyWaypoints);
 
-//Create array of positions to pass to each new enemy
-const enemyPath = calculatePath(enemyWaypoints);
+//using the gridArr path, create array of positions to pass to each new enemy
+const enemyPath = calculateEnemySteps(enemyWaypoints);
 
 canvas.addEventListener("mousemove", (e) => {
   const scalar = canvasSize.x / canvas.getBoundingClientRect().width;

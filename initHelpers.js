@@ -22,7 +22,7 @@ const initGrid = (rows, cols) => {
   return arr;
 };
 
-const createEnemyPath = (gridArr, startingPoint, enemyVerts) => {
+const initEnemyPath = (gridArr, startingPoint, enemyVerts) => {
   enemyVerts.unshift(startingPoint);
 
   const updateGrid = (cords) => {
@@ -67,7 +67,7 @@ const createEnemyPath = (gridArr, startingPoint, enemyVerts) => {
   }
 };
 
-const calculatePath = (enemyWaypoints) => {
+const calculateEnemySteps = (enemyWaypoints) => {
   const path = [];
   for (let i = 0; i < enemyWaypoints.length; i++) {
     const currentPosition = {
@@ -122,4 +122,4 @@ const calculatePath = (enemyWaypoints) => {
   return path;
 };
 
-export { initGrid, createEnemyPath, calculatePath };
+export { initGrid, initEnemyPath, calculateEnemySteps };
