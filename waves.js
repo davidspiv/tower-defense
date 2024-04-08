@@ -1,10 +1,10 @@
 import { Enemy } from "./classes.js";
+import { enemyPath } from "./init.js";
 
 let enemies = [];
 
 const addEnemy = () => {
-  const enemy = new Enemy();
-  enemy.calculatePath();
+  const enemy = new Enemy(enemyPath);
   enemies.unshift(enemy);
 };
 

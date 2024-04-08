@@ -1,7 +1,7 @@
 import { c, enemyWaypoints } from "./init.js";
 
 export class Enemy {
-  constructor() {
+  constructor(path) {
     this.radius = 30;
     this.position = { x: 0, y: enemyWaypoints[0].y - this.radius / 2 };
     this.waypointIndex = 0;
@@ -12,6 +12,7 @@ export class Enemy {
     this.speed = 1;
     this.health = 100;
     this.frame = 0;
+    this.path = path;
   }
 
   draw() {
@@ -37,59 +38,6 @@ export class Enemy {
       this.radius * 2 * (this.health / 100),
       10
     );
-  }
-
-  calculatePath() {
-    this.path = [];
-    for (let i = 0; i < enemyWaypoints.length; i++) {
-      const currentPosition = {
-        x: enemyWaypoints[i].x - this.radius / 2,
-        y: enemyWaypoints[i].y - this.radius / 2,
-      };
-      const nextWaypoint = {
-        x: enemyWaypoints[i + 1]?.x - this.radius / 2,
-        y: enemyWaypoints[i + 1]?.y - this.radius / 2,
-      };
-      if (isNaN(nextWaypoint.x)) {
-        nextWaypoint.x = currentPosition.x;
-        nextWaypoint.y = currentPosition.y;
-      }
-      const distance = {
-        x: nextWaypoint.x - currentPosition.x,
-        y: nextWaypoint.y - currentPosition.y,
-      };
-
-      const diff = { x: 0, y: 0 };
-      if (Math.abs(distance.x) > 0) {
-        for (let i = 1; i <= Math.abs(distance.x); i++) {
-          if (distance.x > 0) {
-            //right
-            diff.x = 1 * i;
-          } else {
-            //left
-            diff.x = -1 * i;
-          }
-          this.path.push({
-            x: currentPosition.x + diff.x,
-            y: currentPosition.y,
-          });
-        }
-      } else {
-        for (let i = 0; i <= Math.abs(distance.y); i++) {
-          if (distance.y > 0) {
-            //up
-            diff.y = 1 * i;
-          } else {
-            //down
-            diff.y = -1 * i;
-          }
-          this.path.push({
-            x: currentPosition.x,
-            y: currentPosition.y + diff.y,
-          });
-        }
-      }
-    }
   }
 
   update() {
@@ -181,7 +129,7 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 500;
-    this.projVelocity = 1;
+    this.projVelocity = 5;
     this.projDamage = 10;
     this.tracking = true;
     this.lastProjTimestamp;
