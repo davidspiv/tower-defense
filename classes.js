@@ -141,7 +141,7 @@ export class Tower extends Tile {
     super(position, color, type);
     this.projectiles = [];
     this.range = 250;
-    this.rpm = 200;
+    this.rpm = 500;
     this.projVelocity = 5;
     this.projDamage = 10;
   }
@@ -157,7 +157,7 @@ export class Tower extends Tile {
     return validEnemies;
   }
 
-  fire(enemies) {
+  fire(enemies, timeStamp) {
     const targets = this.buildTargetArr(enemies);
     if (targets.length > 0) {
       this.projectiles.push(
@@ -166,6 +166,7 @@ export class Tower extends Tile {
             x: this.position.x,
             y: this.position.y,
           },
+          timeStamp,
           targets[targets.length - 1],
           this.projVelocity,
           this.projDamage
@@ -177,15 +178,11 @@ export class Tower extends Tile {
   state(enemies, timeStamp) {
     const projectiles = this.projectiles;
     const lastProjectile = projectiles[projectiles.length - 1];
-    let dist;
-    if (projectiles.length > 0) {
-      const a = lastProjectile.position.x - this.position.x;
-      const b = lastProjectile.position.y - this.position.y;
-      dist = Math.hypot(a, b);
-    }
-
-    if (timeStamp % 10 > this.rpm || dist === undefined) {
-      this.fire(enemies);
+    // console.log(timeStamp - lastProjectile?.timeStamp);
+    let interval = lastProjectile?.timeStamp;
+    if (interval === undefined) interval = 0;
+    if (timeStamp - interval > this.rpm) {
+      this.fire(enemies, timeStamp);
     }
 
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -199,8 +196,15 @@ export class Tower extends Tile {
 }
 
 export class Projectile {
-  constructor(position = { x: 0, y: 0 }, target, projVelocity, projDamage) {
+  constructor(
+    position = { x: 0, y: 0 },
+    timeStamp,
+    target,
+    projVelocity,
+    projDamage
+  ) {
     this.position = position;
+    this.timeStamp = timeStamp;
     this.target = target;
     this.projVelocity = projVelocity;
     this.projDamage = projDamage;
