@@ -73,9 +73,6 @@ export class Tile {
     this.position = position;
     this.color = color;
     this.type = type;
-
-    this.projectiles = [];
-    this.range = 0;
   }
 
   draw() {
