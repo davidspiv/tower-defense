@@ -1,6 +1,6 @@
-const debounceLeading = (func, timeout = 100) => {
-  let timer;
-  return (...args) => {
+const debounceLeading = (func, timeout: number = 100) => {
+  let timer: number | undefined;
+  return (...args: []) => {
     if (!timer) {
       func.apply(this, args);
     }
@@ -11,13 +11,12 @@ const debounceLeading = (func, timeout = 100) => {
   };
 };
 
-const diff = (num1, num2) => {
+const diff = (num1: number, num2: number) => {
   if (num1 > num2) {
     return num1 - num2;
   } else {
     return num2 - num1;
   }
 };
-
 
 export { debounceLeading, diff };

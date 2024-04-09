@@ -7,24 +7,23 @@ image.onload = () => {
     step();
 };
 function step() {
-    const timeStamp = document.timeline.currentTime;
+    const timeStamp = parseFloat(document.timeline.currentTime.toString());
     let start = null;
     let previousTimeStamp = null;
     let done = false;
     if (start === null) {
         start = timeStamp;
     }
-    if (timeStamp !== null && start !== null) {
-        const elapsed = timeStamp - start;
-    }
+    let elapsed = timeStamp - start;
     if (previousTimeStamp !== timeStamp) {
         const count = Math.min(0.1 * elapsed, 200);
         c.drawImage(image, 0, 0);
         for (let row of gridArr) {
             for (let tile of row) {
                 tile.update(mouse);
-                if (tile.type === "tower")
+                if (tile.type === "tower") {
                     tile.projectileState(enemies, timeStamp);
+                }
             }
         }
         waveState();

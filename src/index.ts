@@ -1,6 +1,7 @@
 import { c, gridArr, mouse } from "./init.js";
 import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
+import { Tile, Tower } from "./classes.js";
 
 const image = new Image();
 image.src = "img/map.png";
@@ -9,9 +10,12 @@ image.onload = () => {
 };
 
 function step() {
-  type Numberish = Number | null;
+  type Numberish = number | null;
 
-  const timeStamp: Number = document.timeline.currentTime;
+  const timeStamp: number = parseFloat(
+    document.timeline.currentTime!.toString()
+  );
+
   let start: Numberish = null;
   let previousTimeStamp: Numberish = null;
   let done: boolean = false;
@@ -20,9 +24,7 @@ function step() {
     start = timeStamp;
   }
 
-  if (timeStamp !== null && start !== null) {
-    const elapsed: Number = timeStamp - start;
-  }
+  let elapsed: number = timeStamp - start;
 
   if (previousTimeStamp !== timeStamp) {
     const count = Math.min(0.1 * elapsed, 200);
@@ -30,7 +32,9 @@ function step() {
     for (let row of gridArr) {
       for (let tile of row) {
         tile.update(mouse);
-        if (tile.type === "tower") tile.projectileState(enemies, timeStamp);
+        if (tile.type === "tower") {
+          tile.projectileState(enemies, timeStamp);
+        }
       }
     }
 

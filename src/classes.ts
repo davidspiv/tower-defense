@@ -178,28 +178,23 @@ export class Tower extends Tile {
   }
 
   projectileState(enemies: Enemy[], timeStamp: null | number) {
-    let timeSinceLastShot: null | number = this.lastProjTimestamp;
-    // let duration: number = 0;
-    // if (timeSinceLastShot != null) {
-    //   duration = parseFloat(timeSinceLastShot);
-    // } else {
-    //   duration = 0;
-    // }
     const targets = this.buildTargetArr(enemies);
+    let timeSinceLastShot: null | number = this.lastProjTimestamp;
+
     if (targets.length > 0) {
       const target = targets[targets.length - 1];
-      if (timeStamp !== null && timeSinceLastShot !== null) {
-        if (timeStamp - timeSinceLastShot > this.rpm) {
-          let intersectAngle: number | null;
-          if (this.tracking === false) {
-            intersectAngle = this.calcIntersect(target)!;
-          } else {
-            intersectAngle = null;
-          }
-          // console.log(intersectAngle);
-          this.fire(target, intersectAngle);
-          this.lastProjTimestamp = timeStamp;
+      if (timeStamp === null) timeStamp = 0;
+      if (timeSinceLastShot === null) timeSinceLastShot = 0;
+      if (timeStamp - timeSinceLastShot > this.rpm) {
+        let intersectAngle: number | null;
+        if (this.tracking === false) {
+          intersectAngle = this.calcIntersect(target)!;
+        } else {
+          intersectAngle = null;
         }
+
+        this.fire(target, intersectAngle);
+        this.lastProjTimestamp = timeStamp;
       }
     }
 
@@ -218,6 +213,7 @@ export class Tower extends Tile {
       const xDiff = enemy.position.x - this.position.x;
       const yDiff = enemy.position.y - this.position.y;
       const distance = Math.hypot(xDiff, yDiff);
+
       return distance < enemy.radius + this.range;
     });
 
@@ -226,15 +222,11 @@ export class Tower extends Tile {
 
   calcIntersect(target: Enemy) {
     const startFrame = target.frame;
+
     for (let i = startFrame; i < target.path.length; i++) {
       const xDiff = diff(target.path[i].x, this.position.x);
       const yDiff = diff(target.path[i].y, this.position.y);
-
       const distance = Math.hypot(xDiff, yDiff);
-
-      if (i > target.path.length) {
-        console.log("test");
-      }
 
       if (
         Math.round(distance / 10) ===
@@ -271,7 +263,7 @@ export class Projectile {
   projVelocity: number;
   projDamage: number;
   radius: number;
-  nextWaypoint: Cord;
+  framePosDiff: Cord;
   collision: boolean;
   intersectAngle: number | null;
 
@@ -286,13 +278,13 @@ export class Projectile {
     this.target = target;
     this.projVelocity = projVelocity;
     this.projDamage = projDamage;
+    this.intersectAngle = intersectAngle;
     this.radius = 5;
-    this.nextWaypoint = {
+    this.framePosDiff = {
       x: 0,
       y: 0,
     };
     this.collision = false;
-    this.intersectAngle = intersectAngle;
   }
 
   draw() {
@@ -319,15 +311,15 @@ export class Projectile {
     }
 
     if (this.intersectAngle === null) {
-      this.nextWaypoint.x = Math.cos(angle) * this.projVelocity;
-      this.nextWaypoint.y = Math.sin(angle) * this.projVelocity;
+      this.framePosDiff.x = Math.cos(angle) * this.projVelocity;
+      this.framePosDiff.y = Math.sin(angle) * this.projVelocity;
     } else {
-      this.nextWaypoint.x = Math.cos(this.intersectAngle) * this.projVelocity;
-      this.nextWaypoint.y = Math.sin(this.intersectAngle) * this.projVelocity;
+      this.framePosDiff.x = Math.cos(this.intersectAngle) * this.projVelocity;
+      this.framePosDiff.y = Math.sin(this.intersectAngle) * this.projVelocity;
     }
 
-    this.position.x += this.nextWaypoint.x;
-    this.position.y += this.nextWaypoint.y;
+    this.position.x += this.framePosDiff.x;
+    this.position.y += this.framePosDiff.y;
 
     this.draw();
   }
