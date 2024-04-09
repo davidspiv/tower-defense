@@ -1,4 +1,4 @@
-const debounceLeading = (func, timeout: number = 100) => {
+const debounceLeading = (func: any, timeout: number = 100) => {
   let timer: number | undefined;
   return (...args: []) => {
     if (!timer) {

@@ -1,7 +1,7 @@
 import { c, gridArr, mouse } from "./init.js";
 import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
-import { Tile, Tower } from "./classes.js";
+import { Tower } from "./classes.js";
 
 const image = new Image();
 image.src = "img/map.png";
