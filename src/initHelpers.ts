@@ -1,7 +1,7 @@
-import { Tile } from "./classes.js";
+import { Cord, Tile } from "./classes.js";
 import { c, canvas, canvasSize } from "./init.js";
 
-const reformatWaypoints = (gridArr, input) => {
+const reformatWaypoints = (gridArr: Tile[][], input: Cord[]) => {
   const reformattedWaypoints = [];
   for (let i = 0; i < input.length; i++) {
     reformattedWaypoints.push(gridArr[input[i].y][input[i].x].position);
@@ -9,8 +9,8 @@ const reformatWaypoints = (gridArr, input) => {
   return reformattedWaypoints;
 };
 
-const initGrid = (rows, cols) => {
-  const arr = [];
+const initGrid = (rows: number, cols: number) => {
+  const arr: Tile[][] = [];
 
   canvas.width = canvasSize.x;
   canvas.height = canvasSize.y;
@@ -20,23 +20,27 @@ const initGrid = (rows, cols) => {
   for (let rowNum = 0; rowNum < rows; rowNum++) {
     arr.push([]);
     for (let colNum = 0; colNum < cols; colNum++) {
-      const cords = {
+      const cord = {
         x: (canvasSize.x / cols) * colNum + canvasSize.x / (cols * 2),
         y: (canvasSize.y / rows) * rowNum + canvasSize.y / (rows * 2),
       };
-      arr[rowNum].push(new Tile(cords, "empty"));
+      arr[rowNum].push(new Tile(cord, "empty"));
     }
   }
   return arr;
 };
 
-const initEnemyPath = (gridArr, startingPoint, enemyVerts) => {
+const initEnemyPath = (
+  gridArr: Tile[][],
+  startingPoint: Cord,
+  enemyVerts: Cord[]
+) => {
   enemyVerts.unshift(startingPoint);
 
-  const updateGrid = (cords) => {
+  const updateGrid = (cord: Cord) => {
     for (let row of gridArr) {
       for (let el of row) {
-        if (el.position.x === cords.x && el.position.y === cords.y) {
+        if (el.position.x === cord.x && el.position.y === cord.y) {
           el.type = "path";
         }
       }
@@ -75,7 +79,7 @@ const initEnemyPath = (gridArr, startingPoint, enemyVerts) => {
   }
 };
 
-const calculateEnemySteps = (enemyWaypoints) => {
+const calculateEnemySteps = (enemyWaypoints: Cord[]) => {
   const path = [];
   for (let i = 0; i < enemyWaypoints.length; i++) {
     const currentPosition = {

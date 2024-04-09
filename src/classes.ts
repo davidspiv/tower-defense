@@ -1,8 +1,35 @@
 import { c, enemyWaypoints } from "./init.js";
 import { diff } from "./utils.js";
 
+export class Cord {
+  x: number;
+  y: number;
+
+  constructor(x: number, y: number) {
+    (this.x = x), (this.y = y);
+  }
+}
+
+export class Mouse extends Cord {
+  click: boolean;
+
+  constructor(x: number, y: number) {
+    super(x, y);
+    this.click = false;
+  }
+}
+
 export class Enemy {
-  constructor(path) {
+  radius: number;
+  position: Cord;
+  waypointIndex: number;
+  center: Cord;
+  speed: number;
+  health: number;
+  frame: number;
+  path: Cord[];
+
+  constructor(path: Cord[]) {
     this.radius = 30;
     this.position = { x: 0, y: enemyWaypoints[0].y - this.radius / 2 };
     this.waypointIndex = 0;
@@ -68,7 +95,16 @@ export class Enemy {
 }
 
 export class Tile {
-  constructor(position, color = "rgba(0,0,0,0)", type = "empty") {
+  size: number;
+  position: Cord;
+  color: string;
+  type: string;
+
+  constructor(
+    position: Cord,
+    color: string = "rgba(0,0,0,0)",
+    type: string = "empty"
+  ) {
     this.size = 64;
     this.position = position;
     this.color = color;
@@ -95,7 +131,7 @@ export class Tile {
     // c.fill();
   }
 
-  isSelected(mouse) {
+  isSelected(mouse: Mouse) {
     return (
       mouse.x > this.position.x - this.size / 2 &&
       mouse.x < this.position.x + this.size / 2 &&
@@ -104,7 +140,7 @@ export class Tile {
     );
   }
 
-  update(mouse) {
+  update(mouse: Mouse) {
     const updateType = () => {
       if (this.isSelected(mouse)) {
         this.type = "selected";
@@ -122,7 +158,15 @@ export class Tile {
 }
 
 export class Tower extends Tile {
-  constructor(position, type, color = "brown") {
+  projectiles: Projectile[];
+  range: number;
+  rpm: number;
+  projVelocity: number;
+  projDamage: number;
+  tracking: boolean;
+  lastProjTimestamp: null | number;
+
+  constructor(position: Cord, type: string, color: string = "brown") {
     super(position, color, type);
     this.projectiles = [];
     this.range = 250;
@@ -130,29 +174,38 @@ export class Tower extends Tile {
     this.projVelocity = 2;
     this.projDamage = 10;
     this.tracking = false;
-    this.lastProjTimestamp;
+    this.lastProjTimestamp = null;
   }
 
-  projectileState(enemies, timeStamp) {
-    let timeSinceLastShot = this.lastProjTimestamp;
-    if (timeSinceLastShot === undefined) timeSinceLastShot = 0;
+  projectileState(enemies: Enemy[], timeStamp: null | number) {
+    let timeSinceLastShot: null | number = this.lastProjTimestamp;
+    // let duration: number = 0;
+    // if (timeSinceLastShot != null) {
+    //   duration = parseFloat(timeSinceLastShot);
+    // } else {
+    //   duration = 0;
+    // }
     const targets = this.buildTargetArr(enemies);
     if (targets.length > 0) {
       const target = targets[targets.length - 1];
-      if (timeStamp - timeSinceLastShot > this.rpm) {
-        let intersectAngle;
-        if (this.tracking === false) {
-          intersectAngle = this.calcIntersect(target);
+      if (timeStamp !== null && timeSinceLastShot !== null) {
+        if (timeStamp - timeSinceLastShot > this.rpm) {
+          let intersectAngle: number | null;
+          if (this.tracking === false) {
+            intersectAngle = this.calcIntersect(target)!;
+          } else {
+            intersectAngle = null;
+          }
+          // console.log(intersectAngle);
+          this.fire(target, intersectAngle);
+          this.lastProjTimestamp = timeStamp;
         }
-        // console.log(intersectAngle);
-        this.fire(target, intersectAngle);
-        this.lastProjTimestamp = timeStamp;
       }
     }
 
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const projectile = this.projectiles[i];
-      projectile.update(enemies, this);
+      projectile.update();
       if (projectile.collision === true) {
         projectile.target.health -= projectile.projDamage;
         this.projectiles.splice(i, 1);
@@ -160,7 +213,7 @@ export class Tower extends Tile {
     }
   }
 
-  buildTargetArr(enemies) {
+  buildTargetArr(enemies: Enemy[]) {
     const validEnemies = enemies.filter((enemy) => {
       const xDiff = enemy.position.x - this.position.x;
       const yDiff = enemy.position.y - this.position.y;
@@ -171,7 +224,7 @@ export class Tower extends Tile {
     return validEnemies;
   }
 
-  calcIntersect(target) {
+  calcIntersect(target: Enemy) {
     const startFrame = target.frame;
     for (let i = startFrame; i < target.path.length; i++) {
       const xDiff = diff(target.path[i].x, this.position.x);
@@ -196,7 +249,7 @@ export class Tower extends Tile {
     console.log("calcIntersect didn't work");
   }
 
-  fire(target, intersectAngle) {
+  fire(target: Enemy, intersectAngle: number | null) {
     this.projectiles.push(
       new Projectile(
         {
@@ -213,12 +266,21 @@ export class Tower extends Tile {
 }
 
 export class Projectile {
+  position: Cord;
+  target: any;
+  projVelocity: number;
+  projDamage: number;
+  radius: number;
+  nextWaypoint: Cord;
+  collision: boolean;
+  intersectAngle: number | null;
+
   constructor(
-    position = { x: 0, y: 0 },
-    target,
-    projVelocity,
-    projDamage,
-    intersectAngle
+    position: Cord = { x: 0, y: 0 },
+    target: Enemy,
+    projVelocity: number,
+    projDamage: number,
+    intersectAngle: number | null
   ) {
     this.position = position;
     this.target = target;
@@ -256,7 +318,7 @@ export class Projectile {
       this.collision = true;
     }
 
-    if (this.intersectAngle === undefined) {
+    if (this.intersectAngle === null) {
       this.nextWaypoint.x = Math.cos(angle) * this.projVelocity;
       this.nextWaypoint.y = Math.sin(angle) * this.projVelocity;
     } else {

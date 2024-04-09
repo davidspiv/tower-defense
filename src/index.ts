@@ -9,15 +9,20 @@ image.onload = () => {
 };
 
 function step() {
-  const timeStamp = document.timeline.currentTime;
-  let start, previousTimeStamp;
-  let done = false;
+  type Numberish = Number | null;
 
-  if (start === undefined) {
+  const timeStamp: Number = document.timeline.currentTime;
+  let start: Numberish = null;
+  let previousTimeStamp: Numberish = null;
+  let done: boolean = false;
+
+  if (start === null) {
     start = timeStamp;
   }
 
-  const elapsed = timeStamp - start;
+  if (timeStamp !== null && start !== null) {
+    const elapsed: Number = timeStamp - start;
+  }
 
   if (previousTimeStamp !== timeStamp) {
     const count = Math.min(0.1 * elapsed, 200);

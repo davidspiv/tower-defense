@@ -1,7 +1,7 @@
 import { Enemy } from "./classes.js";
 import { enemyPath } from "./init.js";
 
-let enemies = [];
+let enemies: Enemy[] = [];
 
 const addEnemy = () => {
   const enemy = new Enemy(enemyPath);
