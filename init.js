@@ -1,4 +1,9 @@
-import { initGrid, initEnemyPath, calculateEnemySteps } from "./initHelpers.js";
+import {
+  reformatWaypoints,
+  initGrid,
+  initEnemyPath,
+  calculateEnemySteps,
+} from "./initHelpers.js";
 import { debounceLeading } from "./utils.js";
 import { Tile, Tower } from "./classes.js";
 
@@ -6,24 +11,21 @@ const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 const canvasSize = { x: 1280, y: 768 };
 const gridSize = { x: 20, y: 12 };
+const inputEnemyWaypoints = [
+  { x: 0, y: 6 },
+  { x: 3, y: 6 },
+  { x: 3, y: 2 },
+  { x: 7, y: 2 },
+  { x: 7, y: 9 },
+  { x: 11, y: 9 },
+  { x: 11, y: 2 },
+  { x: 15, y: 2 },
+  { x: 15, y: 7 },
+  { x: 19, y: 7 },
+];
 
 const gridArr = initGrid(gridSize.y, gridSize.x);
-
-// CREATING WAYPOINTS
-// gridArr[min: 0; max: gridSize.x - 1][min: 0; max: gridSize.y - 1];
-// must create 90 deg intersections
-// final waypoint = gridArr[max][Math.floor(max/2)]
-const enemyWaypoints = [
-  gridArr[6][3].position,
-  gridArr[2][3].position,
-  gridArr[2][7].position,
-  gridArr[9][7].position,
-  gridArr[9][11].position,
-  gridArr[2][11].position,
-  gridArr[2][15].position,
-  gridArr[7][15].position,
-  gridArr[7][19].position,
-];
+const enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);
 
 //create paths from waypoints and update gridArr
 initEnemyPath(gridArr, gridArr[6][0].position, enemyWaypoints);

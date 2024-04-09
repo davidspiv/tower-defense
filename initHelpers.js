@@ -1,6 +1,14 @@
 import { Tile } from "./classes.js";
 import { c, canvas, canvasSize } from "./init.js";
 
+const reformatWaypoints = (gridArr, input) => {
+  const reformattedWaypoints = [];
+  for (let i = 0; i < input.length; i++) {
+    reformattedWaypoints.push(gridArr[input[i].y][input[i].x].position);
+  }
+  return reformattedWaypoints;
+};
+
 const initGrid = (rows, cols) => {
   const arr = [];
 
@@ -122,4 +130,4 @@ const calculateEnemySteps = (enemyWaypoints) => {
   return path;
 };
 
-export { initGrid, initEnemyPath, calculateEnemySteps };
+export { reformatWaypoints, initGrid, initEnemyPath, calculateEnemySteps };
