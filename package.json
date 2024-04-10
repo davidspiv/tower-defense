@@ -1,23 +1,16 @@
 {
-  "name": "tower-defense",
-  "version": "1.0.0",
-  "description": "",
+  "name": "tower-defense-app",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "main": "index.js",
   "scripts": {
-    "watch": "tsc --watch"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@typescript-eslint/parser": "^7.6.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.1.3"
-  },
-  "dependencies": {
-    "tsc": "^2.0.4"
+    "eslint": "^9.0.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
   }
 }

@@ -5,7 +5,7 @@ import {
   calculateEnemySteps,
 } from "./initHelpers.js";
 import { debounceLeading } from "./utils.js";
-import { Cord, Mouse, Tile, Tower } from "./classes.js";
+import { Cord, Mouse, Tile, Tower } from "./class/classes.js";
 
 const canvas = document.querySelector("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -26,7 +26,7 @@ const inputEnemyWaypoints: Cord[] = [
   { x: 19, y: 7 },
 ];
 
-const gridArr: Tile[][] | Tower[][] = initGrid(gridSize.y, gridSize.x);
+const gridArr: any[][] = initGrid(gridSize.y, gridSize.x);
 const enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);
 
 //create paths from waypoints and update gridArr
@@ -61,6 +61,5 @@ canvas.addEventListener(
 canvas.addEventListener("mouseup", () => {
   mouse.click = false;
 });
-
 
 export { c, canvas, canvasSize, mouse, enemyWaypoints, gridArr, enemyPath };
