@@ -18,7 +18,7 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 500;
-    this.projVelocity = 2;
+    this.projVelocity = 3;
     this.projDamage = 10;
     this.tracking = false;
     this.lastProjTimestamp = null;
@@ -71,24 +71,23 @@ export class Tower extends Tile {
     const startFrame = target.frame;
 
     for (let i = startFrame; i < target.path.length; i++) {
-      const xDiff = diff(target.path[i].x, this.position.x);
-      const yDiff = diff(target.path[i].y, this.position.y);
+      let index: number;
+      if (i * target.speed <= target.path.length - 1) {
+        index = i * target.speed;
+      } else {
+        index = target.path.length - 1;
+      }
+      const xDiff = diff(target.path[index].x, this.position.x);
+      const yDiff = diff(target.path[index].y, this.position.y);
       const distance = Math.hypot(xDiff, yDiff);
 
       if (
         Math.round(distance / 10) ===
         Math.round(((i - startFrame) * this.projVelocity) / 10)
       ) {
-        let finalIndex: number;
-        if (i * target.speed <= target.path.length - 1) {
-          finalIndex = i * target.speed;
-        } else {
-          finalIndex = target.path.length - 1;
-        }
-
         return Math.atan2(
-          target.path[finalIndex].y - this.position.y,
-          target.path[finalIndex].x - this.position.x
+          target.path[index].y - this.position.y,
+          target.path[index].x - this.position.x
         );
       }
     }

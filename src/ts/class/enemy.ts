@@ -19,11 +19,10 @@ export class Enemy {
       x: this.position.x + this.radius / 2,
       y: this.position.y + this.radius / 2,
     };
-    this.speed = 1;
+    this.speed = 2;
     this.health = 100;
     this.frame = 0;
     this.path = path;
-    this.speed = 3;
   }
 
   draw() {

@@ -1,7 +1,7 @@
 import { c, gridArr, mouse } from "./init.js";
 import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
-let playerHealth: number = 2;
+let playerHealth: number = 2000;
 const image = new Image();
 image.src = "img/map.png";
 image.onload = () => {
@@ -18,7 +18,6 @@ function step() {
   let start: Numberish = null;
   let previousTimeStamp: Numberish = null;
   let done: boolean = false;
-  let animationId: number = 0;
   let isAlive: boolean = true;
 
   if (start === null) {
@@ -47,7 +46,7 @@ function step() {
   if (elapsed < 2000) {
     previousTimeStamp = timeStamp;
     if (!done && isAlive) {
-      animationId = window.requestAnimationFrame(step);
+      window.requestAnimationFrame(step);
     }
   }
 }
