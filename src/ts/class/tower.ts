@@ -2,6 +2,7 @@ import { Cord } from "./utils";
 import { Projectile } from "./projectile";
 import { Enemy } from "./enemy";
 import { Tile } from "./tile";
+import { diff } from "../utils";
 
 export class Tower extends Tile {
   projectiles: Projectile[];

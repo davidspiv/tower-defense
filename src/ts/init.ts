@@ -5,7 +5,9 @@ import {
   calculateEnemySteps,
 } from "./initHelpers.js";
 import { debounceLeading } from "./utils.js";
-import { Cord, Mouse, Tile, Tower } from "./class/classes.js";
+import { Cord, Mouse } from "./class/utils.js";
+import { Tile } from "./class/tile.js";
+import { Tower } from "./class/tower.js";
 
 const canvas = document.querySelector("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d") as CanvasRenderingContext2D;

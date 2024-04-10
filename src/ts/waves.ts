@@ -1,4 +1,4 @@
-import { Enemy } from "./class/classes.js";
+import { Enemy } from "./class/enemy.js";
 import { enemyPath } from "./init.js";
 
 let enemies: Enemy[] = [];

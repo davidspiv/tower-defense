@@ -1,4 +1,5 @@
-import { Cord, Tile } from "./class/classes.js";
+import { Cord } from "./class/utils.js";
+import { Tile } from "./class/tile.js";
 import { c, canvas, canvasSize } from "./init.js";
 
 const reformatWaypoints = (gridArr: Tile[][], input: Cord[]) => {
