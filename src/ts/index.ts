@@ -31,7 +31,6 @@ function step() {
     for (let row of gridArr) {
       for (let tile of row) {
         tile.update(mouse);
-        console.log(tile);
         if (tile.type === "tower") {
           tile.projectileState(enemies, timeStamp);
         }
