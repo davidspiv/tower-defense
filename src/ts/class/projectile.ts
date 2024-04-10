@@ -1,4 +1,4 @@
-import { Cord } from "./utils.ts";
+import { Cord } from "./util.ts";
 import { Enemy } from "./enemy.ts";
 import { c } from "../init.ts";
 

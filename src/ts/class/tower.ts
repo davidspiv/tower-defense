@@ -1,4 +1,4 @@
-import { Cord } from "./utils";
+import { Cord } from "./util";
 import { Projectile } from "./projectile";
 import { Enemy } from "./enemy";
 import { Tile } from "./tile";

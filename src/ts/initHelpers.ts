@@ -1,4 +1,4 @@
-import { Cord } from "./class/utils.js";
+import { Cord } from "./class/util.js";
 import { Tile } from "./class/tile.js";
 import { c, canvas, canvasSize } from "./init.js";
 

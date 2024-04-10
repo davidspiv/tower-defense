@@ -1,4 +1,4 @@
-import { Cord } from "./utils.ts";
+import { Cord } from "./util.ts";
 import { c, enemyWaypoints } from "../init.js";
 
 export class Enemy {

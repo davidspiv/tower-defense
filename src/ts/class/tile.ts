@@ -1,4 +1,4 @@
-import { Cord, Mouse } from "./utils";
+import { Cord, Mouse } from "./util.js";
 import { c } from "../init.js";
 
 export class Tile {

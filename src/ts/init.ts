@@ -5,7 +5,7 @@ import {
   calculateEnemySteps,
 } from "./initHelpers.js";
 import { debounceLeading } from "./utils.js";
-import { Cord, Mouse } from "./class/utils.js";
+import { Cord, Mouse } from "./class/util.js";
 import { Tile } from "./class/tile.js";
 import { Tower } from "./class/tower.js";
 
