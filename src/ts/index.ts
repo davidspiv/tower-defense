@@ -3,7 +3,9 @@ import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
 
 let playerHealth: number = 2;
-const h2 = document.querySelector("h2") as HTMLHeadingElement;
+const gameOverlay = document.querySelector(
+  "#game-overlay-message"
+) as HTMLDivElement;
 
 const image = new Image();
 image.src = "img/map.png";
@@ -48,8 +50,12 @@ function step() {
 
   if (elapsed < 2000) {
     previousTimeStamp = timeStamp;
-    if (isAlive) {
-      h2.classList.add("active");
+    if (!isAlive) {
+      console.log("dead");
+      gameOverlay.classList.remove("not-visible");
+      gameOverlay.classList.add("visible");
+    } else {
+      gameOverlay.classList.add("not-visible");
     }
     if (!done && isAlive) {
       window.requestAnimationFrame(step);

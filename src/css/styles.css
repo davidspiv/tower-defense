@@ -1,14 +1,20 @@
-h2 {
+#game-overlay-message {
   position: absolute;
-  display: none;
   font-size: 50px;
+  width: 100%;
+  text-align: center;
 }
 
-body {
+/* body {
   background-color: black;
+} */
+
+.visible {
+  opacity: 1;
+  visibility: visible;
 }
 
-.active {
-  display: visible;
-  color: red;
+.not-visible {
+  opacity: 0;
+  visibility: hidden;
 }
