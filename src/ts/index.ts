@@ -1,7 +1,10 @@
 import { c, gridArr, mouse } from "./init.js";
 import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
-let playerHealth: number = 2000;
+
+let playerHealth: number = 2;
+const h2 = document.querySelector("h2") as HTMLHeadingElement;
+
 const image = new Image();
 image.src = "img/map.png";
 image.onload = () => {
@@ -45,6 +48,9 @@ function step() {
 
   if (elapsed < 2000) {
     previousTimeStamp = timeStamp;
+    if (isAlive) {
+      h2.classList.add("active");
+    }
     if (!done && isAlive) {
       window.requestAnimationFrame(step);
     }

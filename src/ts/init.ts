@@ -9,13 +9,13 @@ import { Cord, Mouse } from "./class/util.js";
 import { Tile } from "./class/tile.js";
 import { Tower } from "./class/tower.js";
 
-const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-const c = canvas.getContext("2d") as CanvasRenderingContext2D;
-const canvasSize: Cord = { x: 1280, y: 768 };
-const mouse: Mouse = new Mouse(0, 0);
+export const canvas = document.querySelector("canvas") as HTMLCanvasElement;
+export const c = canvas.getContext("2d") as CanvasRenderingContext2D;
+export const canvasSize: Cord = { x: 1280, y: 768 };
+export const mouse: Mouse = new Mouse(0, 0);
 
 const gridSize: Cord = { x: 20, y: 12 };
-const inputEnemyWaypoints: Cord[] = [
+export const inputEnemyWaypoints: Cord[] = [
   { x: 0, y: 6 },
   { x: 3, y: 6 },
   { x: 3, y: 2 },
@@ -28,14 +28,14 @@ const inputEnemyWaypoints: Cord[] = [
   { x: 19, y: 7 },
 ];
 
-const gridArr: any[][] = initGrid(gridSize.y, gridSize.x);
-const enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);
+export const gridArr: any[][] = initGrid(gridSize.y, gridSize.x);
+export const enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);
 
 //create paths from waypoints and update gridArr
 initEnemyPath(gridArr, gridArr[6][0].position, enemyWaypoints);
 
 //using the gridArr path, create array of positions to pass to each new enemy
-const enemyPath = calculateEnemySteps(enemyWaypoints);
+export const enemyPath = calculateEnemySteps(enemyWaypoints);
 
 canvas.addEventListener("mousemove", (e) => {
   const scalar: number = canvasSize.x / canvas.getBoundingClientRect().width;
@@ -63,5 +63,3 @@ canvas.addEventListener(
 canvas.addEventListener("mouseup", () => {
   mouse.click = false;
 });
-
-export { c, canvas, canvasSize, mouse, enemyWaypoints, gridArr, enemyPath };
