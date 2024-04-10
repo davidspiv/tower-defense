@@ -1,7 +1,7 @@
 import { c, gridArr, mouse } from "./init.js";
 import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
-
+let playerHealth: number = 2;
 const image = new Image();
 image.src = "img/map.png";
 image.onload = () => {
@@ -18,6 +18,8 @@ function step() {
   let start: Numberish = null;
   let previousTimeStamp: Numberish = null;
   let done: boolean = false;
+  let animationId: number = 0;
+  let isAlive: boolean = true;
 
   if (start === null) {
     start = timeStamp;
@@ -37,15 +39,15 @@ function step() {
       }
     }
 
-    waveState();
+    isAlive = waveState();
 
     if (count === 200) done = true;
   }
 
   if (elapsed < 2000) {
     previousTimeStamp = timeStamp;
-    if (!done) {
-      window.requestAnimationFrame(step);
+    if (!done && isAlive) {
+      animationId = window.requestAnimationFrame(step);
     }
   }
 }
@@ -60,12 +62,17 @@ const waveState = () => {
     enemy.update();
     if (enemy.reachedBase()) {
       enemies.splice(i, 1);
+      playerHealth -= 1;
     }
   }
 
+  if (playerHealth < 0) {
+    return false;
+  }
   if (enemies.length === 0) {
     newWave();
   }
+  return true;
 };
 
 const newWave = debounceLeading(() => {

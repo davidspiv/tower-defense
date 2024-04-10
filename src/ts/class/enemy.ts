@@ -23,6 +23,7 @@ export class Enemy {
     this.health = 100;
     this.frame = 0;
     this.path = path;
+    this.speed = 3;
   }
 
   draw() {
@@ -51,7 +52,11 @@ export class Enemy {
   }
 
   update() {
-    this.position = this.path[this.frame];
+    if (this.frame * this.speed <= this.path.length - 1) {
+      this.position = this.path[this.frame * this.speed];
+    } else {
+      this.position = this.path[this.path.length - 1];
+    }
 
     this.center = {
       x: this.position.x + this.radius / 2,

@@ -79,9 +79,16 @@ export class Tower extends Tile {
         Math.round(distance / 10) ===
         Math.round(((i - startFrame) * this.projVelocity) / 10)
       ) {
+        let finalIndex: number;
+        if (i * target.speed <= target.path.length - 1) {
+          finalIndex = i * target.speed;
+        } else {
+          finalIndex = target.path.length - 1;
+        }
+
         return Math.atan2(
-          target.path[i].y - this.position.y,
-          target.path[i].x - this.position.x
+          target.path[finalIndex].y - this.position.y,
+          target.path[finalIndex].x - this.position.x
         );
       }
     }
