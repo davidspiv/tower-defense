@@ -1,13 +1,10 @@
-import { Cord } from "./class/util.js";
+import { Cord } from "./class/cord.js";
 import { Tile } from "./class/tile.js";
-import { ctx, c, cSize } from "./init.js";
+import { ctx, c, cSize, cRatio } from "./init.js";
 
-const reformatWaypoints = (gridArr: Tile[][], input: Cord[]) => {
-  const reformattedWaypoints = [];
-  for (let i = 0; i < input.length; i++) {
-    reformattedWaypoints.push(gridArr[input[i].y][input[i].x].position);
-  }
-  return reformattedWaypoints;
+const setUpCanvas = () => {
+  c.width = c.clientWidth;
+  c.height = c.width * cRatio;
 };
 
 const initGrid = (rows: number, cols: number) => {
@@ -29,6 +26,14 @@ const initGrid = (rows: number, cols: number) => {
     }
   }
   return arr;
+};
+
+const reformatWaypoints = (gridArr: Tile[][], input: Cord[]) => {
+  const reformattedWaypoints = [];
+  for (let i = 0; i < input.length; i++) {
+    reformattedWaypoints.push(gridArr[input[i].y][input[i].x].position);
+  }
+  return reformattedWaypoints;
 };
 
 const initEnemyPath = (
@@ -135,4 +140,10 @@ const calculateEnemySteps = (enemyWaypoints: Cord[]) => {
   return path;
 };
 
-export { reformatWaypoints, initGrid, initEnemyPath, calculateEnemySteps };
+export {
+  setUpCanvas,
+  initGrid,
+  reformatWaypoints,
+  initEnemyPath,
+  calculateEnemySteps,
+};

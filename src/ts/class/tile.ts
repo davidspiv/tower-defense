@@ -8,7 +8,11 @@ export class Tile {
   color: string;
   type: string;
 
-  constructor(position: Cord, color: string, type: string) {
+  constructor(
+    position: Cord,
+    color: string = "rgba(0,0,0,0)",
+    type: string = "empty"
+  ) {
     this.size = 64;
     this.position = position;
     this.color = color;

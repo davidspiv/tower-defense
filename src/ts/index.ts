@@ -14,52 +14,31 @@ image.onload = () => {
 };
 
 function step() {
-  type Numberish = number | null;
-
   const timeStamp: number = parseFloat(
     document.timeline.currentTime!.toString()
   );
 
-  let start: Numberish = null;
-  let previousTimeStamp: Numberish = null;
-  let done: boolean = false;
   let isAlive: boolean = true;
 
-  if (start === null) {
-    start = timeStamp;
-  }
-
-  let elapsed: number = timeStamp - start;
-
-  if (previousTimeStamp !== timeStamp) {
-    const count = Math.min(0.1 * elapsed, 200);
-    ctx.drawImage(image, 0, 0);
-    for (let row of gridArr) {
-      for (let tile of row) {
-        tile.update(mouse);
-        if (tile.type === "tower") {
-          tile.projectileState(enemies, timeStamp);
-        }
+  ctx.drawImage(image, 0, 0);
+  for (let row of gridArr) {
+    for (let tile of row) {
+      tile.update(mouse);
+      if (tile.type === "tower") {
+        tile.projectileState(enemies, timeStamp);
       }
     }
-
-    isAlive = waveState();
-
-    if (count === 200) done = true;
   }
 
-  if (elapsed < 2000) {
-    previousTimeStamp = timeStamp;
-    if (!isAlive) {
-      console.log("dead");
-      gameOverlay.classList.remove("not-visible");
-      gameOverlay.classList.add("visible");
-    } else {
-      gameOverlay.classList.add("not-visible");
-    }
-    if (!done && isAlive) {
-      window.requestAnimationFrame(step);
-    }
+  isAlive = waveState();
+
+  if (!isAlive) {
+    console.log("dead");
+    gameOverlay.classList.remove("not-visible");
+    gameOverlay.classList.add("visible");
+  }
+  if (isAlive) {
+    window.requestAnimationFrame(step);
   }
 }
 
