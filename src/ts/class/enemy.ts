@@ -52,15 +52,14 @@ export class Enemy {
   }
 
   update() {
-    for (let el of this.path) {
-      el.x += mouse.centerOffset.x * mouse.dragSpeed;
-      el.y += mouse.centerOffset.y * mouse.dragSpeed;
-    }
     if (this.frame * this.speed <= this.path.length - 1) {
       this.position = this.path[this.frame * this.speed];
     } else {
       this.position = this.path[this.path.length - 1];
     }
+
+    this.position.x += mouse.centerOffset.x * mouse.dragSpeed;
+    this.position.y += mouse.centerOffset.y * mouse.dragSpeed;
 
     this.center = {
       x: this.position.x + this.radius / 2,

@@ -1,6 +1,6 @@
 import {
-  reformatWaypoints,
   initGrid,
+  reformatWaypoints,
   initEnemyPath,
   calculateEnemySteps,
 } from "./initHelpers.js";

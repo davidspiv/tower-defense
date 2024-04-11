@@ -1,6 +1,6 @@
 import { Cord } from "./cord.js";
-import { Mouse } from "./mouse.js";
 import { ctx } from "../init.js";
+import { mouse } from "../init.js";
 
 export class Tile {
   size: number;
@@ -39,7 +39,7 @@ export class Tile {
     // ctx.fill();
   }
 
-  isSelected(mouse: Mouse) {
+  isSelected() {
     return (
       mouse.x > this.position.x - this.size / 2 &&
       mouse.x < this.position.x + this.size / 2 &&
@@ -48,17 +48,17 @@ export class Tile {
     );
   }
 
-  update(mouse: Mouse) {
-    this.position.x += mouse.centerOffset.x * mouse.dragSpeed;
-    this.position.y += mouse.centerOffset.y * mouse.dragSpeed;
+  update() {
     const updateType = () => {
-      if (this.isSelected(mouse)) {
+      if (this.isSelected()) {
         this.type = "selected";
       } else {
         this.type = "empty";
       }
     };
 
+    this.position.x += mouse.centerOffset.x * mouse.dragSpeed;
+    this.position.y += mouse.centerOffset.y * mouse.dragSpeed;
     if (this.type !== "path" && this.type !== "tower") {
       updateType();
     }

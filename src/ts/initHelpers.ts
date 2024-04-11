@@ -2,16 +2,12 @@ import { Cord } from "./class/cord.js";
 import { Tile } from "./class/tile.js";
 import { ctx, c, cSize, cRatio } from "./init.js";
 
-const setUpCanvas = () => {
+const initGrid = (rows: number, cols: number) => {
   c.width = c.clientWidth;
   c.height = c.width * cRatio;
-};
 
-const initGrid = (rows: number, cols: number) => {
   const arr: Tile[][] = [];
 
-  c.width = cSize.x;
-  c.height = cSize.y;
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, c.width, c.height);
 
@@ -140,10 +136,4 @@ const calculateEnemySteps = (enemyWaypoints: Cord[]) => {
   return path;
 };
 
-export {
-  setUpCanvas,
-  initGrid,
-  reformatWaypoints,
-  initEnemyPath,
-  calculateEnemySteps,
-};
+export { initGrid, reformatWaypoints, initEnemyPath, calculateEnemySteps };
