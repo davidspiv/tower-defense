@@ -1,8 +1,8 @@
-import { Cord } from "./cord";
-import { Projectile } from "./projectile";
-import { Enemy } from "./enemy";
-import { Tile } from "./tile";
-import { diff } from "../utils";
+import { Cord } from "./cord.js";
+import { Projectile } from "./projectile.js";
+import { Enemy } from "./enemy.js";
+import { Tile } from "./tile.js";
+import { diff } from "../utils.js";
 
 export class Tower extends Tile {
   projectiles: Projectile[];

@@ -49,6 +49,8 @@ export class Tile {
   }
 
   update(mouse: Mouse) {
+    this.position.x += mouse.centerOffset.x * mouse.dragSpeed;
+    this.position.y += mouse.centerOffset.y * mouse.dragSpeed;
     const updateType = () => {
       if (this.isSelected(mouse)) {
         this.type = "selected";
@@ -60,7 +62,8 @@ export class Tile {
     if (this.type !== "path" && this.type !== "tower") {
       updateType();
     }
-
     this.draw();
+    // mouse.centerOffset.x = 0;
+    // mouse.centerOffset.y = 0;
   }
 }
