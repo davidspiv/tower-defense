@@ -32,7 +32,7 @@ function step() {
       }
     }
   }
-
+  mouse.centerOffset = new Cord();
   isAlive = waveState();
 
   if (!isAlive) {
@@ -79,10 +79,13 @@ c.addEventListener("mousemove", (e) => {
 
   if (mouse.click === true) {
     if (mouse.lastPos.x !== 0 && mouse.lastPos.y !== 0) {
+      // if (mouse.x === mouse.lastPos.x) currentOffset.x = 0;
+      // if (mouse.y === mouse.lastPos.y) currentOffset.y = 0;
       mouse.centerOffset.x = mouse.x - mouse.lastPos.x;
       mouse.centerOffset.y = mouse.y - mouse.lastPos.y;
       mouse.lastPos = new Cord();
-      console.log(mouse.centerOffset);
+
+      mouse.lastPos = new Cord();
     } else {
       mouse.lastPos.x = mouse.x;
       mouse.lastPos.y = mouse.y;

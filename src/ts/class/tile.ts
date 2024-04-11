@@ -63,7 +63,5 @@ export class Tile {
       updateType();
     }
     this.draw();
-    // mouse.centerOffset.x = 0;
-    // mouse.centerOffset.y = 0;
   }
 }
