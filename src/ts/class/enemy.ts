@@ -1,4 +1,5 @@
 import { Cord } from "./cord.ts";
+import { mouse } from "../init.js";
 import { ctx, enemyWaypoints } from "../init.js";
 
 export class Enemy {
@@ -51,6 +52,10 @@ export class Enemy {
   }
 
   update() {
+    for (let el of this.path) {
+      el.x += mouse.centerOffset.x * mouse.dragSpeed;
+      el.y += mouse.centerOffset.y * mouse.dragSpeed;
+    }
     if (this.frame * this.speed <= this.path.length - 1) {
       this.position = this.path[this.frame * this.speed];
     } else {

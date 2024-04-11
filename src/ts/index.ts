@@ -32,7 +32,7 @@ function step() {
       }
     }
   }
-  mouse.centerOffset = new Cord();
+
   isAlive = waveState();
 
   if (!isAlive) {
@@ -41,6 +41,7 @@ function step() {
     gameOverlay.classList.add("visible");
   }
   if (isAlive) {
+    mouse.centerOffset = new Cord();
     window.requestAnimationFrame(step);
   }
 }
@@ -72,19 +73,15 @@ const newWave = debounceLeading(() => {
   waveArr[0]();
 });
 
-c.addEventListener("mousemove", (e) => {
+window.addEventListener("mousemove", (e) => {
   const scalar: number = cSize.x / c.getBoundingClientRect().width;
   mouse.x = e.clientX * scalar;
   mouse.y = e.clientY * scalar;
 
   if (mouse.click === true) {
     if (mouse.lastPos.x !== 0 && mouse.lastPos.y !== 0) {
-      // if (mouse.x === mouse.lastPos.x) currentOffset.x = 0;
-      // if (mouse.y === mouse.lastPos.y) currentOffset.y = 0;
       mouse.centerOffset.x = mouse.x - mouse.lastPos.x;
       mouse.centerOffset.y = mouse.y - mouse.lastPos.y;
-      mouse.lastPos = new Cord();
-
       mouse.lastPos = new Cord();
     } else {
       mouse.lastPos.x = mouse.x;
@@ -93,7 +90,7 @@ c.addEventListener("mousemove", (e) => {
   }
 });
 
-c.addEventListener(
+window.addEventListener(
   "mousedown",
   debounceLeading(() => {
     const row = Math.floor(mouse.y / 64);
@@ -112,8 +109,6 @@ c.addEventListener(
   })
 );
 
-c.addEventListener("mouseup", () => {
+window.addEventListener("mouseup", () => {
   mouse.click = false;
-  mouse.centerOffset.x = 0;
-  mouse.centerOffset.y = 0;
 });
