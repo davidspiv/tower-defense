@@ -1,8 +1,8 @@
-import { c, gridArr, mouse } from "./init.js";
+import { ctx, gridArr, mouse } from "./init.js";
 import { enemies, waveArr } from "./waves.js";
 import { debounceLeading } from "./utils.js";
 
-let playerHealth: number = 2;
+let playerHealth: number = 200;
 const gameOverlay = document.querySelector(
   "#game-overlay-message"
 ) as HTMLDivElement;
@@ -33,7 +33,7 @@ function step() {
 
   if (previousTimeStamp !== timeStamp) {
     const count = Math.min(0.1 * elapsed, 200);
-    c.drawImage(image, 0, 0);
+    ctx.drawImage(image, 0, 0);
     for (let row of gridArr) {
       for (let tile of row) {
         tile.update(mouse);

@@ -1,5 +1,6 @@
-import { Cord, Mouse } from "./util.js";
-import { c } from "../init.js";
+import { Cord } from "./cord.js";
+import { Mouse } from "./mouse.js";
+import { ctx } from "../init.js";
 
 export class Tile {
   size: number;
@@ -7,11 +8,7 @@ export class Tile {
   color: string;
   type: string;
 
-  constructor(
-    position: Cord,
-    color: string = "rgba(0,0,0,0)",
-    type: string = "empty"
-  ) {
+  constructor(position: Cord, color: string, type: string) {
     this.size = 64;
     this.position = position;
     this.color = color;
@@ -24,18 +21,18 @@ export class Tile {
     if (this.type === "selected") this.color = "rgba(255,255,255,.2)";
     if (this.type === "tower") this.color = "brown";
 
-    c.fillStyle = this.color;
-    c.fillRect(
+    ctx.fillStyle = this.color;
+    ctx.fillRect(
       this.position.x - this.size / 2,
       this.position.y - this.size / 2,
       this.size,
       this.size
     );
 
-    // c.beginPath();
-    // c.arc(this.position.x, this.position.y, this.range, 0, Math.PI * 2);
-    // c.fillStyle = "rgba(0, 0, 255, .1)";
-    // c.fill();
+    // ctx.beginPath();
+    // ctx.arc(this.position.x, this.position.y, this.range, 0, Math.PI * 2);
+    // ctx.fillStyle = "rgba(0, 0, 255, .1)";
+    // ctx.fill();
   }
 
   isSelected(mouse: Mouse) {

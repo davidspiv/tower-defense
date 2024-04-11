@@ -1,5 +1,5 @@
-import { Cord } from "./util.ts";
-import { c, enemyWaypoints } from "../init.js";
+import { Cord } from "./cord.ts";
+import { ctx, enemyWaypoints } from "../init.js";
 
 export class Enemy {
   radius: number;
@@ -27,22 +27,22 @@ export class Enemy {
 
   draw() {
     //body
-    c.beginPath();
-    c.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = "white";
-    c.fill();
+    ctx.beginPath();
+    ctx.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "white";
+    ctx.fill();
 
     //health bar
-    c.fillStyle = "red";
-    c.fillRect(
+    ctx.fillStyle = "red";
+    ctx.fillRect(
       this.center.x - this.radius,
       this.center.y - this.radius - 15,
       this.radius * 2,
       10
     );
 
-    c.fillStyle = "green";
-    c.fillRect(
+    ctx.fillStyle = "green";
+    ctx.fillRect(
       this.center.x - this.radius,
       this.center.y - this.radius - 15,
       this.radius * 2 * (this.health / 100),

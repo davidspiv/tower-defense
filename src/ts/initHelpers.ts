@@ -1,6 +1,6 @@
 import { Cord } from "./class/util.js";
 import { Tile } from "./class/tile.js";
-import { c, canvas, canvasSize } from "./init.js";
+import { ctx, c, cSize } from "./init.js";
 
 const reformatWaypoints = (gridArr: Tile[][], input: Cord[]) => {
   const reformattedWaypoints = [];
@@ -13,17 +13,17 @@ const reformatWaypoints = (gridArr: Tile[][], input: Cord[]) => {
 const initGrid = (rows: number, cols: number) => {
   const arr: Tile[][] = [];
 
-  canvas.width = canvasSize.x;
-  canvas.height = canvasSize.y;
-  c.fillStyle = "white";
-  c.fillRect(0, 0, canvas.width, canvas.height);
+  c.width = cSize.x;
+  c.height = cSize.y;
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, c.width, c.height);
 
   for (let rowNum = 0; rowNum < rows; rowNum++) {
     arr.push([]);
     for (let colNum = 0; colNum < cols; colNum++) {
       const cord = {
-        x: (canvasSize.x / cols) * colNum + canvasSize.x / (cols * 2),
-        y: (canvasSize.y / rows) * rowNum + canvasSize.y / (rows * 2),
+        x: (cSize.x / cols) * colNum + cSize.x / (cols * 2),
+        y: (cSize.y / rows) * rowNum + cSize.y / (rows * 2),
       };
       arr[rowNum].push(new Tile(cord, "empty"));
     }

@@ -1,6 +1,6 @@
-import { Cord } from "./util.ts";
+import { Cord } from "./cord.ts";
 import { Enemy } from "./enemy.ts";
-import { c } from "../init.ts";
+import { ctx } from "../init.ts";
 
 export class Projectile {
   position: Cord;
@@ -33,10 +33,10 @@ export class Projectile {
   }
 
   draw() {
-    c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = "black";
-    c.fill();
+    ctx.beginPath();
+    ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "black";
+    ctx.fill();
   }
 
   update() {
