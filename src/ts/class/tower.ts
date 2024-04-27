@@ -25,7 +25,7 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 50;
-    this.projVelocity = 2;
+    this.projVelocity = 5;
     this.projDamage = 10;
     this.tracking = false;
     this.lastProjTimestamp = 0;
