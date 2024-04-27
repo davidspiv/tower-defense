@@ -1,8 +1,8 @@
+import { diff } from "../utils.js";
 import { Cord } from "./cord.js";
 import { Projectile } from "./projectile.js";
 import { Enemy } from "./enemy.js";
 import { Tile } from "./tile.js";
-import { diff } from "../utils.js";
 import { enemyPath } from "../main.js";
 
 export class Tower extends Tile {

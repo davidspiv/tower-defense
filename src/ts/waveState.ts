@@ -1,4 +1,4 @@
-import { debounceLeading } from "./utils.js";
+import { throttle } from "./utils.js";
 import { Enemy } from "./class/enemy.js";
 
 let playerHealth = 10;
@@ -43,7 +43,7 @@ const waveState = () => {
   return true;
 };
 
-const newWave = debounceLeading(() => {
+const newWave = throttle(() => {
   waveArr[0]();
 });
 

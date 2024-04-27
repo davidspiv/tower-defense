@@ -1,4 +1,4 @@
-import { debounceLeading } from "./utils";
+import { throttle } from "./utils";
 import { Cord } from "./class/cord";
 import { Mouse } from "./class/mouse";
 import { Tower } from "./class/tower.js";
@@ -118,14 +118,14 @@ window.onload = function () {
 
   window.addEventListener(
     "mousedown",
-    debounceLeading(() => {
+    throttle(() => {
       mouse.click = true;
     }, 10)
   );
 
   window.addEventListener(
     "mouseup",
-    debounceLeading(() => {
+    throttle(() => {
       mouse.mouseUp();
     }, 10)
   );

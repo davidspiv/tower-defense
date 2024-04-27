@@ -46,6 +46,15 @@ export const updateGrid = () => {
         tile.position.x + tile.width / 2,
         tile.position.y + tile.height / 2
       );
+      // if (tile.hasOwnProperty("projVelocity")) {
+      //   for (let projectile of tile.projectiles) {
+      //     const cord = {
+      //       x: projectile.position.x + gridTopLeft.x,
+      //       y: projectile.position.y + gridTopLeft.y,
+      //     };
+      //     projectile.position = cord;
+      //   }
+      // }
       gridArr[rowIndex][colIndex] = tile;
     }
   }
