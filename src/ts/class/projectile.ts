@@ -1,6 +1,6 @@
 import { Cord } from "./cord.ts";
 import { Enemy } from "./enemy.ts";
-import { ctx } from "../main.ts";
+import { ctx } from "../index.ts";
 
 export class Projectile {
   position: Cord;

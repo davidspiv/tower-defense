@@ -1,6 +1,6 @@
 import { Cord } from "./cord.ts";
-import { ctx, enemyWaypoints, enemyPath } from "../main.ts";
-import { canvas } from "../main.ts";
+import { ctx, enemyWaypoints, enemyPath } from "../index.ts";
+import { canvas } from "../index.ts";
 
 export class Enemy {
   radius: number;

@@ -1,11 +1,11 @@
 import { Cord } from "./class/cord";
 import { Tile } from "./class/tile";
-import { canvas, ctx, gridArr, gridTopLeft } from "./main";
+import { canvas, ctx, gridArr, gridTopLeft } from ".";
 
 export let tileWidth: number;
 export let tileHeight: number;
 
-export const reset = () => {
+export const resetCanvas = () => {
   canvas.width = window.innerWidth;
   canvas.height = canvas.width * 0.55;
 };

@@ -1,13 +1,12 @@
-import { throttle } from "./utils";
-import { Cord } from "./class/cord";
-import { Mouse } from "./class/mouse";
+import { throttle } from "./utils.js";
+import { Cord } from "./class/cord.js";
+import { Mouse } from "./class/mouse.js";
 import { Tower } from "./class/tower.js";
 import { waveState, enemies } from "./waveState.js";
-// import { Tile } from "./class/tile";
 import {
   tileWidth,
   tileHeight,
-  reset,
+  resetCanvas,
   initGrid,
   updateGrid,
   reformatWaypoints,
@@ -15,21 +14,19 @@ import {
   calculateEnemySteps,
 } from "./helper.js";
 
-//INPUT
+//*I/O
 let mouse = new Mouse();
-
-//OUTPUT
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
 
-//GRID
+//*GRID
 let gridArr: any[][];
 let gridTopLeft = new Cord();
 let offsetDifference = new Cord();
 let enemyWaypoints: Cord[];
 let enemyPath: Cord[];
 
-//ANIMATION
+//*ANIMATION LOOP
 const interval: number = 1000 / 60;
 let animationFrame: number;
 let startTime: number = 0;
@@ -75,7 +72,6 @@ window.onload = function () {
       }
 
       mouse.select = false;
-      // mouse.click = false;
     } else if (!isNaN(deltaTime)) {
       timer += deltaTime;
     }
@@ -84,6 +80,7 @@ window.onload = function () {
     if (isAlive) animationFrame = requestAnimationFrame(animate);
   };
 
+  //*INITIALIZE LEVEL
   const inputEnemyWaypoints: Cord[] = [
     { x: 0, y: 6 },
     { x: 3, y: 6 },
@@ -97,7 +94,7 @@ window.onload = function () {
     { x: 19, y: 7 },
   ];
 
-  reset();
+  resetCanvas();
   gridArr = initGrid();
   updateGrid();
   enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);
@@ -105,9 +102,10 @@ window.onload = function () {
   enemyPath = calculateEnemySteps(enemyWaypoints);
   animate(animate);
 
+  //*EVENT LISTENERS
   window.addEventListener("resize", () => {
     cancelAnimationFrame(animationFrame);
-    reset();
+    resetCanvas();
     updateGrid();
     gridTopLeft = new Cord(gridArr[0][0].x, gridArr[0][0].y);
     enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);

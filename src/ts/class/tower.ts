@@ -3,7 +3,7 @@ import { Cord } from "./cord.js";
 import { Projectile } from "./projectile.js";
 import { Enemy } from "./enemy.js";
 import { Tile } from "./tile.js";
-import { enemyPath } from "../main.js";
+import { enemyPath } from "../index.js";
 
 export class Tower extends Tile {
   type: String = "tower";
