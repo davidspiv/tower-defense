@@ -22,7 +22,6 @@ let ctx: CanvasRenderingContext2D;
 //*GRID
 let gridArr: any[][];
 let gridTopLeft = new Cord();
-let offsetDifference = new Cord();
 let enemyWaypoints: Cord[];
 let enemyPath: Cord[];
 
@@ -64,9 +63,8 @@ window.onload = function () {
             if (!tile.hasOwnProperty("projVelocity")) {
               const lastPos = tile.position;
               gridArr[i][j] = new Tower(ctx, tileWidth, tileHeight, lastPos);
-            } else {
-              tile.projectileState(enemies);
             }
+            gridArr[i][j].projectileState(enemies);
           }
         }
       }
@@ -98,7 +96,7 @@ window.onload = function () {
   gridArr = initGrid();
   updateGrid();
   enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);
-  embedPath(gridArr, enemyWaypoints);
+  embedPath(gridArr, inputEnemyWaypoints);
   enemyPath = calculateEnemySteps(enemyWaypoints);
   animate(animate);
 
@@ -109,7 +107,7 @@ window.onload = function () {
     updateGrid();
     gridTopLeft = new Cord(gridArr[0][0].x, gridArr[0][0].y);
     enemyWaypoints = reformatWaypoints(gridArr, inputEnemyWaypoints);
-    embedPath(gridArr, enemyWaypoints);
+    embedPath(gridArr, inputEnemyWaypoints);
     enemyPath = calculateEnemySteps(enemyWaypoints);
     animate(animate);
   });
@@ -138,13 +136,9 @@ window.onload = function () {
         mouse.lastPos.x = mouse.x;
         mouse.lastPos.y = mouse.y;
       } else {
-        offsetDifference = new Cord(
-          mouse.x - mouse.lastPos.x,
-          mouse.y - mouse.lastPos.y
-        );
-
-        gridTopLeft.x += offsetDifference.x;
-        gridTopLeft.y += offsetDifference.y;
+        mouse.getOffset();
+        gridTopLeft.x += mouse.offset.x;
+        gridTopLeft.y += mouse.offset.y;
         updateGrid();
         enemyPath = calculateEnemySteps(enemyWaypoints);
         mouse.lastPos = new Cord();
@@ -153,13 +147,4 @@ window.onload = function () {
   });
 };
 
-export {
-  canvas,
-  ctx,
-  mouse,
-  gridArr,
-  gridTopLeft,
-  offsetDifference,
-  enemyWaypoints,
-  enemyPath,
-};
+export { canvas, ctx, mouse, gridArr, gridTopLeft, enemyWaypoints, enemyPath };

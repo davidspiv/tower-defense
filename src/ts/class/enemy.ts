@@ -35,17 +35,17 @@ export class Enemy {
     ctx.fillStyle = "red";
     ctx.fillRect(
       this.center.x - this.radius,
-      this.center.y - this.radius - 15,
+      this.center.y - this.radius - this.radius / 2,
       this.radius * 2,
-      10
+      this.radius / 3
     );
 
     ctx.fillStyle = "green";
     ctx.fillRect(
       this.center.x - this.radius,
-      this.center.y - this.radius - 15,
+      this.center.y - this.radius - this.radius / 2,
       this.radius * 2 * (this.health / 100),
-      10
+      this.radius / 3
     );
   }
 

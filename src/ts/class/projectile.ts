@@ -1,6 +1,6 @@
 import { Cord } from "./cord.ts";
 import { Enemy } from "./enemy.ts";
-import { ctx } from "../index.ts";
+import { ctx, canvas } from "../index.ts";
 
 export class Projectile {
   position: Cord;
@@ -24,7 +24,7 @@ export class Projectile {
     this.projVelocity = projVelocity;
     this.projDamage = projDamage;
     this.intersectAngle = intersectAngle;
-    this.radius = 5;
+    this.radius = canvas.width / 150;
     this.framePosDiff = {
       x: 0,
       y: 0,

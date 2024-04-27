@@ -65,19 +65,45 @@ export const reformatWaypoints = (gridArr: Tile[][], input: Cord[]) => {
   return reformattedWaypoints;
 };
 
-export const embedPath = (gridArr: Tile[][], enemyVerts: Cord[]) => {
-  for (let rowIndex = 0; rowIndex < gridArr.length; rowIndex++) {
-    const cols = gridArr[rowIndex].length;
-    for (let colIndex = 0; colIndex < cols; colIndex++) {
-      const tile = gridArr[rowIndex][colIndex];
-
-      for (let i = 0; i < enemyVerts.length; i++) {
-        if (
-          enemyVerts[i].x === tile.position.x &&
-          enemyVerts[i].y === tile.position.y
-        ) {
-          tile.type = "path";
-          break;
+export const embedPath = (gridArr: Tile[][], inputEnemyWaypoints: Cord[]) => {
+  for (let i = 0; i < inputEnemyWaypoints.length; i++) {
+    gridArr[inputEnemyWaypoints[i].y][inputEnemyWaypoints[i].x].type = "path";
+    let nextWaypoint = new Cord();
+    if (inputEnemyWaypoints.length >= i) {
+      nextWaypoint = inputEnemyWaypoints[i + 1];
+    }
+    if (nextWaypoint) {
+      const distance = {
+        x: nextWaypoint.x - inputEnemyWaypoints[i].x,
+        y: nextWaypoint.y - inputEnemyWaypoints[i].y,
+      };
+      if (distance.x !== 0) {
+        for (let j = 0; j < Math.abs(distance.x); j++) {
+          if (distance.x > 0) {
+            gridArr[inputEnemyWaypoints[i].y][
+              inputEnemyWaypoints[i].x + j
+            ].type = "path";
+            console.log("right");
+          } else {
+            gridArr[inputEnemyWaypoints[i].y][
+              inputEnemyWaypoints[i].x - j
+            ].type = "path";
+            console.log("left");
+          }
+        }
+      } else {
+        for (let j = 0; j < Math.abs(distance.y); j++) {
+          if (distance.y > 0) {
+            gridArr[inputEnemyWaypoints[i].y + j][
+              inputEnemyWaypoints[i].x
+            ].type = "path";
+            console.log("down");
+          } else {
+            gridArr[inputEnemyWaypoints[i].y - j][
+              inputEnemyWaypoints[i].x
+            ].type = "path";
+            console.log("up");
+          }
         }
       }
     }
@@ -110,10 +136,10 @@ export const calculateEnemySteps = (enemyWaypoints: Cord[]) => {
       for (let i = 1; i <= Math.abs(distance.x); i++) {
         if (distance.x > 0) {
           //right
-          diff.x = 1 * i;
+          diff.x = i;
         } else {
           //left
-          diff.x = -1 * i;
+          diff.x = -i;
         }
         path.push({
           x: currentPosition.x + diff.x + gridTopLeft.x,
@@ -124,10 +150,10 @@ export const calculateEnemySteps = (enemyWaypoints: Cord[]) => {
       for (let i = 0; i <= Math.abs(distance.y); i++) {
         if (distance.y > 0) {
           //up
-          diff.y = 1 * i;
+          diff.y = i;
         } else {
           //down
-          diff.y = -1 * i;
+          diff.y = -i;
         }
         path.push({
           x: currentPosition.x + gridTopLeft.x,
