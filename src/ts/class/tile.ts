@@ -1,67 +1,69 @@
-import { Cord } from "./cord.js";
-import { ctx } from "../init.js";
-import { mouse } from "../init.js";
+import { Cord } from "./cord";
+import { Mouse } from "./mouse";
 
 export class Tile {
-  size: number;
+  ctx: CanvasRenderingContext2D;
+  width: number;
+  height: number;
   position: Cord;
-  color: string;
-  type: string;
+  center: Cord;
+  type: String = "";
 
   constructor(
-    position: Cord,
-    color: string = "rgba(0,0,0,0)",
-    type: string = "empty"
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    position: Cord
   ) {
-    this.size = 64;
+    this.ctx = ctx;
+    this.width = width;
+    this.height = height;
     this.position = position;
-    this.color = color;
-    this.type = type;
+    this.center = new Cord(
+      this.position.x + this.width / 2,
+      this.position.y + this.height / 2
+    );
+  }
+
+  isSelected(mouse: Mouse) {
+    return (
+      mouse.x > this.position.x &&
+      mouse.x < this.position.x + this.width &&
+      mouse.y > this.position.y &&
+      mouse.y < this.position.y + this.height
+    );
+  }
+
+  update(mouse: Mouse) {
+    if (this.type !== "path" && this.type !== "tower") {
+      if (this.isSelected(mouse)) {
+        this.type = "selected";
+      } else {
+        this.type = "";
+      }
+    }
+
+    if (this.isSelected(mouse) && mouse.select) {
+      if (this.type === "tower") {
+        this.type = "selected";
+      } else if (this.type === "selected") {
+        this.type = "tower";
+      }
+    }
+    this.draw();
   }
 
   draw() {
-    if (this.type === "empty") this.color = "rgba(0,0,0,0)";
-    if (this.type === "path") this.color = "rgba(0,0,0,0)";
-    if (this.type === "selected") this.color = "rgba(255,255,255,.2)";
-    if (this.type === "tower") this.color = "brown";
+    if (this.type === "selected") this.ctx.fillStyle = "rgba(255,255,255,.5)";
+    if (this.type === "tower") this.ctx.fillStyle = "brown";
+    if (this.type === "path") this.ctx.fillStyle = "white";
+    if (this.type === "") this.ctx.fillStyle = "rgba(255,255,255,0)";
 
-    ctx.fillStyle = this.color;
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - this.size / 2,
-      this.size,
-      this.size
+    this.ctx.fillRect(
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
     );
-
-    // ctx.beginPath();
-    // ctx.arc(this.position.x, this.position.y, this.range, 0, Math.PI * 2);
-    // ctx.fillStyle = "rgba(0, 0, 255, .1)";
-    // ctx.fill();
-  }
-
-  isSelected() {
-    return (
-      mouse.x > this.position.x - this.size / 2 &&
-      mouse.x < this.position.x + this.size / 2 &&
-      mouse.y > this.position.y - this.size / 2 &&
-      mouse.y < this.position.y + this.size / 2
-    );
-  }
-
-  update() {
-    const updateType = () => {
-      if (this.isSelected()) {
-        this.type = "selected";
-      } else {
-        this.type = "empty";
-      }
-    };
-
-    this.position.x += mouse.centerOffset.x * mouse.dragSpeed;
-    this.position.y += mouse.centerOffset.y * mouse.dragSpeed;
-    if (this.type !== "path" && this.type !== "tower") {
-      updateType();
-    }
-    this.draw();
   }
 }

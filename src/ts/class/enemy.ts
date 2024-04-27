@@ -1,6 +1,6 @@
 import { Cord } from "./cord.ts";
-import { mouse } from "../init.js";
-import { ctx, enemyWaypoints } from "../init.js";
+import { ctx, enemyWaypoints, enemyPath } from "../main.ts";
+import { canvas } from "../main.ts";
 
 export class Enemy {
   radius: number;
@@ -10,10 +10,9 @@ export class Enemy {
   speed: number;
   health: number;
   frame: number;
-  path: Cord[];
 
-  constructor(path: Cord[]) {
-    this.radius = 30;
+  constructor() {
+    this.radius = canvas.width / 50;
     this.position = { x: 0, y: enemyWaypoints[0].y - this.radius / 2 };
     this.waypointIndex = 0;
     this.center = {
@@ -23,7 +22,6 @@ export class Enemy {
     this.speed = 2;
     this.health = 100;
     this.frame = 0;
-    this.path = path;
   }
 
   draw() {
@@ -52,14 +50,12 @@ export class Enemy {
   }
 
   update() {
-    if (this.frame * this.speed <= this.path.length - 1) {
-      this.position = this.path[this.frame * this.speed];
+    this.radius = canvas.width / 50;
+    if (this.frame * this.speed <= enemyPath.length - 1) {
+      this.position = enemyPath[this.frame * this.speed];
     } else {
-      this.position = this.path[this.path.length - 1];
+      this.position = enemyPath[enemyPath.length - 1];
     }
-
-    this.position.x += mouse.centerOffset.x * mouse.dragSpeed;
-    this.position.y += mouse.centerOffset.y * mouse.dragSpeed;
 
     this.center = {
       x: this.position.x + this.radius / 2,
@@ -73,13 +69,9 @@ export class Enemy {
   reachedBase() {
     return (
       Math.round(this.position.x) ===
-        Math.round(
-          enemyWaypoints[enemyWaypoints.length - 1].x - this.radius / 2
-        ) &&
+        Math.round(enemyPath[enemyPath.length - 1].x) &&
       Math.round(this.position.y) ===
-        Math.round(
-          enemyWaypoints[enemyWaypoints.length - 1].y - this.radius / 2
-        )
+        Math.round(enemyPath[enemyPath.length - 1].y)
     );
   }
 }

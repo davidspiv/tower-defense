@@ -1,6 +1,6 @@
 import { Cord } from "./cord.ts";
 import { Enemy } from "./enemy.ts";
-import { ctx } from "../init.ts";
+import { ctx } from "../main.ts";
 
 export class Projectile {
   position: Cord;
@@ -41,7 +41,6 @@ export class Projectile {
 
   update() {
     const center = this.target?.center;
-
     const angle = Math.atan2(
       center.y - this.position.y,
       center.x - this.position.x
@@ -62,7 +61,6 @@ export class Projectile {
       this.framePosDiff.x = Math.cos(this.intersectAngle) * this.projVelocity;
       this.framePosDiff.y = Math.sin(this.intersectAngle) * this.projVelocity;
     }
-
     this.position.x += this.framePosDiff.x;
     this.position.y += this.framePosDiff.y;
 

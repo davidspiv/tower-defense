@@ -3,36 +3,40 @@ import { Projectile } from "./projectile.js";
 import { Enemy } from "./enemy.js";
 import { Tile } from "./tile.js";
 import { diff } from "../utils.js";
+import { enemyPath } from "../main.js";
 
 export class Tower extends Tile {
+  type: String = "tower";
   projectiles: Projectile[];
   range: number;
   rpm: number;
   projVelocity: number;
   projDamage: number;
   tracking: boolean;
-  lastProjTimestamp: null | number;
+  lastProjTimestamp: number;
 
-  constructor(position: Cord, type: string, color: string = "brown") {
-    super(position, color, type);
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    position: Cord
+  ) {
+    super(ctx, width, height, position);
     this.projectiles = [];
     this.range = 250;
-    this.rpm = 500;
-    this.projVelocity = 3;
+    this.rpm = 50;
+    this.projVelocity = 5;
     this.projDamage = 10;
     this.tracking = false;
-    this.lastProjTimestamp = null;
+    this.lastProjTimestamp = 0;
   }
 
-  projectileState(enemies: Enemy[], timeStamp: null | number) {
+  projectileState(enemies: Enemy[]) {
     const targets = this.buildTargetArr(enemies);
-    let timeSinceLastShot: null | number = this.lastProjTimestamp;
 
     if (targets.length > 0) {
       const target = targets[targets.length - 1];
-      if (timeStamp === null) timeStamp = 0;
-      if (timeSinceLastShot === null) timeSinceLastShot = 0;
-      if (timeStamp - timeSinceLastShot > this.rpm) {
+      if (this.lastProjTimestamp > this.rpm) {
         let intersectAngle: number | null;
         if (this.tracking === false) {
           intersectAngle = this.calcIntersect(target)!;
@@ -41,11 +45,13 @@ export class Tower extends Tile {
         }
 
         this.fire(target, intersectAngle);
-        this.lastProjTimestamp = timeStamp;
+        this.lastProjTimestamp = 0;
+      } else {
+        this.lastProjTimestamp += 1;
       }
     }
 
-    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+    for (let i = 0; i < this.projectiles.length; i++) {
       const projectile = this.projectiles[i];
       projectile.update();
       if (projectile.collision === true) {
@@ -70,15 +76,15 @@ export class Tower extends Tile {
   calcIntersect(target: Enemy) {
     const startFrame = target.frame;
 
-    for (let i = startFrame; i < target.path.length; i++) {
+    for (let i = startFrame; i < enemyPath.length; i++) {
       let index: number;
-      if (i * target.speed <= target.path.length - 1) {
+      if (i * target.speed <= enemyPath.length - 1) {
         index = i * target.speed;
       } else {
-        index = target.path.length - 1;
+        index = enemyPath.length - 1;
       }
-      const xDiff = diff(target.path[index].x, this.position.x);
-      const yDiff = diff(target.path[index].y, this.position.y);
+      const xDiff = diff(enemyPath[index].x, this.position.x);
+      const yDiff = diff(enemyPath[index].y, this.position.y);
       const distance = Math.hypot(xDiff, yDiff);
 
       if (
@@ -86,8 +92,8 @@ export class Tower extends Tile {
         Math.round(((i - startFrame) * this.projVelocity) / 10)
       ) {
         return Math.atan2(
-          target.path[index].y - this.position.y,
-          target.path[index].x - this.position.x
+          enemyPath[index].y - this.position.y,
+          enemyPath[index].x - this.position.x
         );
       }
     }
@@ -98,8 +104,8 @@ export class Tower extends Tile {
     this.projectiles.push(
       new Projectile(
         {
-          x: this.position.x,
-          y: this.position.y,
+          x: this.center.x,
+          y: this.center.y,
         },
         target,
         this.projVelocity,
