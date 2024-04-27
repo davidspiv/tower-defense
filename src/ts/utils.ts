@@ -11,7 +11,7 @@ export const throttle = (func: any, timeout: number = 100) => {
   };
 };
 
-export const diff = (num1: number, num2: number) => {
+export const absDiff = (num1: number, num2: number) => {
   if (num1 > num2) {
     return num1 - num2;
   } else {

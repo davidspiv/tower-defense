@@ -1,4 +1,4 @@
-import { diff } from "../utils.js";
+import { absDiff } from "../utils.js";
 import { Cord } from "./cord.js";
 import { Projectile } from "./projectile.js";
 import { Enemy } from "./enemy.js";
@@ -25,7 +25,7 @@ export class Tower extends Tile {
     this.projectiles = [];
     this.range = 250;
     this.rpm = 50;
-    this.projVelocity = 5;
+    this.projVelocity = 2;
     this.projDamage = 10;
     this.tracking = false;
     this.lastProjTimestamp = 0;
@@ -63,9 +63,9 @@ export class Tower extends Tile {
 
   buildTargetArr(enemies: Enemy[]) {
     const validEnemies = enemies.filter((enemy) => {
-      const xDiff = enemy.position.x - this.position.x;
-      const yDiff = enemy.position.y - this.position.y;
-      const distance = Math.hypot(xDiff, yDiff);
+      const xabsDiff = enemy.position.x - this.position.x;
+      const yabsDiff = enemy.position.y - this.position.y;
+      const distance = Math.hypot(xabsDiff, yabsDiff);
 
       return distance < enemy.radius + this.range;
     });
@@ -83,9 +83,9 @@ export class Tower extends Tile {
       } else {
         index = enemyPath.length - 1;
       }
-      const xDiff = diff(enemyPath[index].x, this.position.x);
-      const yDiff = diff(enemyPath[index].y, this.position.y);
-      const distance = Math.hypot(xDiff, yDiff);
+      const xabsDiff = absDiff(enemyPath[index].x, this.position.x);
+      const yabsDiff = absDiff(enemyPath[index].y, this.position.y);
+      const distance = Math.hypot(xabsDiff, yabsDiff);
 
       if (
         Math.round(distance / 10) ===

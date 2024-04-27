@@ -23,8 +23,6 @@ export const initGrid = () => {
       arr[rowIndex].push(new Tile(ctx, tileWidth, tileHeight, new Cord()));
     }
   }
-  // let pos = arr[0][0].position;
-  // arr[0][0] = new Tower(ctx, tileWidth, tileHeight, pos);
   return arr;
 };
 
@@ -33,12 +31,14 @@ export const updateGrid = () => {
     const cols = gridArr[rowIndex].length;
     for (let colIndex = 0; colIndex < cols; colIndex++) {
       const tile = gridArr[rowIndex][colIndex];
+      const oldPos = tile.position;
       tileWidth = canvas.width / cols;
       tileHeight = canvas.height / gridArr.length;
       const cord = {
         x: tileWidth * colIndex + gridTopLeft.x,
         y: tileHeight * rowIndex + gridTopLeft.y,
       };
+      const diff = new Cord(oldPos.x - cord.x, oldPos.y - cord.y);
       tile.position = cord;
       tile.width = canvas.width / cols;
       tile.height = canvas.height / gridArr.length;
@@ -46,16 +46,13 @@ export const updateGrid = () => {
         tile.position.x + tile.width / 2,
         tile.position.y + tile.height / 2
       );
-      // if (tile.hasOwnProperty("projVelocity")) {
-      //   for (let projectile of tile.projectiles) {
-      //     const cord = {
-      //       x: projectile.position.x + gridTopLeft.x,
-      //       y: projectile.position.y + gridTopLeft.y,
-      //     };
-      //     projectile.position = cord;
-      //   }
-      // }
-      gridArr[rowIndex][colIndex] = tile;
+      if (tile.hasOwnProperty("projVelocity")) {
+        for (let projectile of tile.projectiles) {
+          projectile.position.x -= diff.x;
+          projectile.position.y -= diff.y;
+        }
+        gridArr[rowIndex][colIndex] = tile;
+      }
     }
   }
 };
@@ -141,11 +138,3 @@ export const calculateEnemySteps = (enemyWaypoints: Cord[]) => {
   }
   return path;
 };
-
-// export const updateEnemySteps = () => {
-//   for (let i = 0; i < enemyPath.length; i++) {
-//     // if (scaleDifference > 20 || scaleDifference < -20) return;
-//     enemyPath[i].x = enemyPath[i].x + offsetDifference.x;
-//     enemyPath[i].y = enemyPath[i].y + offsetDifference.y;
-//   }
-// };
